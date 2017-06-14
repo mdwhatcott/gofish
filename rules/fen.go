@@ -27,10 +27,27 @@ type FEN struct {
 	halfMoveCount         int
 }
 
+/**************************************************************************/
+
 func ParseFEN(raw string) (this *FEN, err error) {
 	this = &FEN{}
 	fields := strings.Split(raw, " ")
-	ranks := strings.Split(fields[0], "/")
+	this.parseSquares(fields[0])
+	this.parsePlayerToMove(fields[1])
+	this.parseCastlingOpportunities(fields[2])
+	// TODO: this.parseEnPassantTargetSquare(fields[3])
+	err = this.parseHalfMoveCount(fields[4])
+	if err != nil {
+		return nil, err
+	}
+	err = this.parseFullMoveCount(fields[5])
+	if err != nil {
+		return nil, err
+	}
+	return this, nil
+}
+func (this *FEN) parseSquares(fenBoard string) {
+	ranks := strings.Split(fenBoard, "/")
 	this.squares = make([]Piece, 64)
 	for r, rank := range ranks {
 		square := 64 - ((r + 1) * 8)
@@ -43,13 +60,17 @@ func ParseFEN(raw string) (this *FEN, err error) {
 			}
 		}
 	}
-	if fields[1] == "w" {
+}
+
+func (this *FEN) parsePlayerToMove(player string) {
+	if player == "w" {
 		this.toMove = White
 	} else {
 		this.toMove = Black
 	}
-
-	for _, c := range fields[2] {
+}
+func (this *FEN) parseCastlingOpportunities(castle string) {
+	for _, c := range castle {
 		switch c {
 		case 'K':
 			this.whiteCanCastleKingside = true
@@ -62,19 +83,18 @@ func ParseFEN(raw string) (this *FEN, err error) {
 		}
 	}
 
-	// TODO: fields[3] // en-passant
-
-	this.halfMoveCount, err = strconv.Atoi(fields[4])
-	if err != nil {
-		return nil, err
-	}
-
-	this.fullMoveCount, err = strconv.Atoi(fields[5])
-	if err != nil {
-		return nil, err
-	}
-	return this, nil
 }
+func (this *FEN) parseHalfMoveCount(count string) (err error) {
+	this.halfMoveCount, err = strconv.Atoi(count)
+	return err
+}
+
+func (this *FEN) parseFullMoveCount(count string) (err error) {
+	this.fullMoveCount, err = strconv.Atoi(count)
+	return err
+}
+
+/**************************************************************************/
 
 func PrepareFEN(squares map[int]Piece, game *Game) *FEN {
 	return &FEN{
