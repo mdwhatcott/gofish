@@ -30,7 +30,7 @@ func (this *GameFixture) TestStartingGameConditions() {
 	this.So(this.game.CanCastleKingside(Black), should.BeTrue)
 	this.So(this.game.CanCastleQueenside(White), should.BeTrue)
 	this.So(this.game.CanCastleQueenside(Black), should.BeTrue)
-	this.So(this.game.FEN(), should.Equal, startingPositionFEN)
+	this.So(this.game.DumpFEN(), should.Equal, startingPositionFEN)
 }
 
 func (this *GameFixture) TestGameConditionsAfterFirstPawnMove() {
@@ -41,14 +41,14 @@ func (this *GameFixture) TestGameConditionsAfterFirstPawnMove() {
 	this.So(this.game.PlayerToMove(), should.Equal, Black)
 	this.So(this.game.FullMoveCount(), should.Equal, 1)
 	this.So(this.game.HalfMoveCount(), should.Equal, 0) // pawn move
-	this.So(this.game.FEN(), should.Equal, positionAfter1A3)
+	this.So(this.game.DumpFEN(), should.Equal, positionAfter1A3)
 }
 
 func (this *GameFixture) TestLoadFEN() {
 	const kingsOnBackRanks = "4k3/8/8/8/8/8/8/4K3 w - - 0 1"
 	err := this.game.LoadFEN(kingsOnBackRanks)
 	this.So(err, should.BeNil)
-	this.So(this.game.FEN(), should.Equal, kingsOnBackRanks)
+	this.So(this.game.DumpFEN(), should.Equal, kingsOnBackRanks)
 }
 
 func (this *GameFixture) TestLegalFirstMoves() {
@@ -80,7 +80,7 @@ func (this *GameFixture) assertFirstMoveSuccessful(move *Move, expectedFEN strin
 	this.game.Reset()
 	err := this.game.Move(move)
 	this.So(err, should.BeNil)
-	this.So(this.game.FEN(), should.Equal, expectedFEN)
+	this.So(this.game.DumpFEN(), should.Equal, expectedFEN)
 }
 
 const positionAfter1A3 = "rnbqkbnr/pppppppp/8/8/8/P7/1PPPPPPP/RNBQKBNR b KQkq - 0 1"

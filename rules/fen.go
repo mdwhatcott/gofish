@@ -3,6 +3,8 @@ package rules
 import (
 	"bytes"
 	"strconv"
+	"strings"
+	"unicode"
 )
 
 const startingPositionFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
@@ -23,6 +25,55 @@ type FEN struct {
 	enPassantTargetSquare int
 	fullMoveCount         int
 	halfMoveCount         int
+}
+
+func ParseFEN(raw string) (this *FEN, err error) {
+	this = &FEN{}
+	fields := strings.Split(raw, " ")
+	ranks := strings.Split(fields[0], "/")
+	this.squares = make([]Piece, 64)
+	for r, rank := range ranks {
+		square := 64 - ((r + 1) * 8)
+		for _, c := range rank {
+			if unicode.IsDigit(c) {
+				square += int(c - '0')
+			} else {
+				this.squares[square] = Piece(string(c))
+				square++
+			}
+		}
+	}
+	if fields[1] == "w" {
+		this.toMove = White
+	} else {
+		this.toMove = Black
+	}
+
+	for _, c := range fields[2] {
+		switch c {
+		case 'K':
+			this.whiteCanCastleKingside = true
+		case 'k':
+			this.blackCanCastleKingside = true
+		case 'Q':
+			this.whiteCanCastleQueenside = true
+		case 'q':
+			this.blackCanCastleQueenside = true
+		}
+	}
+
+	// TODO: fields[3] // en-passant
+
+	this.halfMoveCount, err = strconv.Atoi(fields[4])
+	if err != nil {
+		return nil, err
+	}
+
+	this.fullMoveCount, err = strconv.Atoi(fields[5])
+	if err != nil {
+		return nil, err
+	}
+	return this, nil
 }
 
 func PrepareFEN(squares map[int]Piece, game *Game) *FEN {
@@ -102,7 +153,7 @@ func (this *FEN) recordCastlingOpportunities() {
 		this.buffer.WriteString("q")
 	}
 
-	if this.buffer.Len() == initial { // TODO: Test
+	if this.buffer.Len() == initial {
 		this.buffer.WriteString("-")
 	}
 }

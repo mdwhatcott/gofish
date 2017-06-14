@@ -1,21 +1,20 @@
 package rules
 
-import (
-	"strings"
-	"unicode"
-)
-
 type Game struct {
-	squares  map[int]Piece
-	player   Player
-	castling map[rune]struct{}
+	squares map[int]Piece
+	player  Player
+
+	fullMoveCount int
+	halfMoveCount int
+
+	whiteCanCastleKingside  bool // TODO: no need for fields, infer this from squares
+	blackCanCastleKingside  bool
+	whiteCanCastleQueenside bool
+	blackCanCastleQueenside bool
 }
 
 func NewGame() *Game {
-	game := &Game{
-		squares:  make(map[int]Piece, 64),
-		castling: make(map[rune]struct{}),
-	}
+	game := &Game{squares: make(map[int]Piece, 64)}
 	game.Reset()
 	return game
 }
@@ -24,42 +23,21 @@ func (this *Game) Reset() {
 	this.LoadFEN(startingPositionFEN)
 }
 
-func (this *Game) LoadFEN(fen string) error {
-	for key := range this.castling {
-		delete(this.castling, key)
+func (this *Game) LoadFEN(raw string) error {
+	fen, err := ParseFEN(raw)
+	if err != nil {
+		return err
 	}
-	for key := range this.squares {
-		delete(this.squares, key)
+	for s, piece := range fen.squares {
+		this.squares[s] = piece
 	}
-
-	fields := strings.Split(fen, " ")
-	ranks := strings.Split(fields[0], "/")
-	squares := make(map[int]Piece, 64)
-	for r, rank := range ranks {
-		square := 64 - ((r + 1) * 8)
-		for _, c := range rank {
-			if unicode.IsDigit(c) {
-				square += int(c - '0')
-			} else {
-				squares[square] = Piece(string(c))
-				square++
-			}
-		}
-	}
-	this.squares = squares
-	if fields[1] == "w" {
-		this.player = White
-	} else {
-		this.player = Black
-	}
-
-	if fields[2] != "-" {
-		for _, c := range fields[2] {
-			this.castling[c] = struct{}{}
-		}
-	}
-
-	// TODO: fields[3], fields[4], fields[5]
+	this.player = fen.toMove
+	this.blackCanCastleQueenside = fen.blackCanCastleQueenside
+	this.blackCanCastleKingside = fen.blackCanCastleKingside
+	this.whiteCanCastleQueenside = fen.whiteCanCastleQueenside
+	this.whiteCanCastleKingside = fen.whiteCanCastleKingside
+	this.fullMoveCount = fen.fullMoveCount
+	this.halfMoveCount = fen.halfMoveCount
 	return nil
 }
 
@@ -72,34 +50,30 @@ func (this *Game) IsOver() bool {
 }
 
 func (this *Game) FullMoveCount() int {
-	return 1
+	return this.fullMoveCount
 }
 
 func (this *Game) HalfMoveCount() int {
-	return 0
+	return this.halfMoveCount
 }
 
 func (this *Game) CanCastleKingside(player Player) bool {
 	if player == White {
-		_, valid := this.castling['K']
-		return valid
+		return this.whiteCanCastleKingside
 	} else {
-		_, valid := this.castling['k']
-		return valid
+		return this.blackCanCastleKingside
 	}
 }
 
 func (this *Game) CanCastleQueenside(player Player) bool {
 	if player == White {
-		_, valid := this.castling['Q']
-		return valid
+		return this.whiteCanCastleQueenside
 	} else {
-		_, valid := this.castling['q']
-		return valid
+		return this.blackCanCastleQueenside
 	}
 }
 
-func (this *Game) FEN() string {
+func (this *Game) DumpFEN() string {
 	return PrepareFEN(this.squares, this).String()
 }
 
