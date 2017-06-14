@@ -1,3 +1,4 @@
 *.test
 *.out
 .idea
+coverage.out

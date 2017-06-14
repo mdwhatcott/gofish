@@ -1,11 +1,11 @@
-package console
+package rules
 
 import (
 	"fmt"
 	"strconv"
 )
 
-// TODO: this will probably be moved elsewhere as it's useful, but not here (anymore)
+const rankCount = 8
 
 func squareIndex(algebraic string) int {
 	fileLetter := algebraic[0]
@@ -14,6 +14,6 @@ func squareIndex(algebraic string) int {
 		panic(fmt.Sprintf("Invalid algebraic coordinate: %s", algebraic))
 	}
 	file := int(fileLetter - 'a')
-	startOfRank := (rankCount - rankNumber) * rankCount
+	startOfRank := (rankNumber -1) * rankCount
 	return startOfRank + file
 }
