@@ -9,7 +9,7 @@ type Game struct {
 	fullMoveCount int
 	halfMoveCount int
 
-	whiteCanCastleKingside  bool // TODO: no need for fields, infer this from squares
+	whiteCanCastleKingside  bool
 	blackCanCastleKingside  bool
 	whiteCanCastleQueenside bool
 	blackCanCastleQueenside bool
@@ -48,6 +48,10 @@ func (this *Game) LoadFEN(raw string) error {
 	return nil
 }
 
+func (this *Game) ExportFEN() string {
+	return PrepareFEN(this.squares, this).String()
+}
+
 func (this *Game) PlayerToMove() Player {
 	return this.player
 }
@@ -80,10 +84,6 @@ func (this *Game) CanCastleQueenside(player Player) bool {
 	}
 }
 
-func (this *Game) DumpFEN() string {
-	return PrepareFEN(this.squares, this).String()
-}
-
 func (this *Game) Move(move Move) error {
 	this.squares[move.To], this.squares[move.From] = this.squares[move.From], Void
 	this.player = this.player.Other()
@@ -91,7 +91,6 @@ func (this *Game) Move(move Move) error {
 }
 
 func (this *Game) CalculateAvailableMoves() (moves []Move) {
-	moves = []Move{}
 	for square, piece := range this.squares {
 		if piece.Player() == this.PlayerToMove() {
 			for _, move := range piece.CalculateMovesFrom(square) {
