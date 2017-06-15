@@ -1,0 +1,9 @@
+En-passant Rules:     https://en.wikipedia.org/wiki/En_passant
+Castling Rules:       https://en.wikipedia.org/wiki/Castling
+Check:                https://en.wikipedia.org/wiki/Check_(chess)
+Checkmate:            https://en.wikipedia.org/wiki/Checkmate
+Draw:                 https://en.wikipedia.org/wiki/Draw_(chess)
+Fifty-move rule:      https://en.wikipedia.org/wiki/Fifty-move_rule
+Stalemate:            https://en.wikipedia.org/wiki/Stalemate
+Threefold Repetition: https://en.wikipedia.org/wiki/Threefold_repetition
+Promotion:            https://en.wikipedia.org/wiki/Promotion_(chess)

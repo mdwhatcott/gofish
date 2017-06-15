@@ -104,6 +104,7 @@ func (this *GameFixture) TestLegalKingMoves_KingOnLeftEdge() {
 // TODO: Queen moves: Combined movements of Bishop and Rook
 // TODO: Legal pawn moves: advance 1 rank or optionally 2 ranks if on starting square as long as ending square is empty,
 // TODO: Legal pawn captures: capture diagonally or en-passant if on its "5th" rank and eligible opposing pawn target exists
+// TODO: Pawn promotions
 // TODO: enforce castling limitations
 // TODO: detect discovered check
 // TODO: prevent illegal move into check
