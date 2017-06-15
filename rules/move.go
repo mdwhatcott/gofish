@@ -1,7 +1,7 @@
 package rules
 
 type Move struct {
-	From  string
-	To    string
+	From  Square
+	To    Square
 	Piece Piece
 }

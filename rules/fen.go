@@ -96,7 +96,7 @@ func (this *FEN) parseFullMoveCount(count string) (err error) {
 
 /**************************************************************************/
 
-func PrepareFEN(squares map[int]Piece, game *Game) *FEN {
+func PrepareFEN(squares map[Square]Piece, game *Game) *FEN {
 	return &FEN{
 		buffer:                  new(bytes.Buffer),
 		squares:                 copyMapToArray(squares),
@@ -111,9 +111,10 @@ func PrepareFEN(squares map[int]Piece, game *Game) *FEN {
 	}
 }
 
-func copyMapToArray(squares map[int]Piece) (pieces []Piece) {
-	for x := 0; x < 64; x++ {
-		pieces = append(pieces, squares[x])
+func copyMapToArray(squares map[Square]Piece) []Piece {
+	pieces := make([]Piece, len(squares))
+	for square, piece := range squares {
+		pieces[square.Int()] = piece
 	}
 	return pieces
 }

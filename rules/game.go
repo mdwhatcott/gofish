@@ -1,7 +1,9 @@
 package rules
 
+import "log"
+
 type Game struct {
-	squares map[int]Piece
+	squares map[Square]Piece
 	player  Player
 
 	fullMoveCount int
@@ -14,7 +16,7 @@ type Game struct {
 }
 
 func NewGame() *Game {
-	game := &Game{squares: make(map[int]Piece, 64)}
+	game := &Game{squares: make(map[Square]Piece, 64)}
 	game.Reset()
 	return game
 }
@@ -23,13 +25,18 @@ func (this *Game) Reset() {
 	this.LoadFEN(startingPositionFEN)
 }
 
+func (this *Game) MustLoadFEN(raw string) {
+	if err := this.LoadFEN(raw); err != nil {
+		log.Panicf("Could not load fen [%s] because of err:", err)
+	}
+}
 func (this *Game) LoadFEN(raw string) error {
 	fen, err := ParseFEN(raw)
 	if err != nil {
 		return err
 	}
 	for s, piece := range fen.squares {
-		this.squares[s] = piece
+		this.squares[NewSquare(s)] = piece
 	}
 	this.player = fen.toMove
 	this.blackCanCastleQueenside = fen.blackCanCastleQueenside
@@ -77,15 +84,20 @@ func (this *Game) DumpFEN() string {
 	return PrepareFEN(this.squares, this).String()
 }
 
-func (this *Game) Move(move *Move) error {
-	from := squareIndex(move.From)
-	to := squareIndex(move.To)
-	this.squares[to], this.squares[from] = this.squares[from], Void
-	this.player = this.player.Alternate()
+func (this *Game) Move(move Move) error {
+	this.squares[move.To], this.squares[move.From] = this.squares[move.From], Void
+	this.player = this.player.Other()
 	return nil
 }
 
 func (this *Game) CalculateAvailableMoves() (moves []Move) {
 	moves = []Move{}
+	for square, piece := range this.squares {
+		if piece.Player() == this.PlayerToMove() {
+			for _, move := range piece.CalculateMovesFrom(square) {
+				moves = append(moves, move)
+			}
+		}
+	}
 	return moves
 }

@@ -3,11 +3,12 @@ package rules
 type Player int
 
 const (
-	White Player = 0
-	Black Player = 1
+	Neutral Player = iota
+	White
+	Black
 )
 
-func (this Player) Alternate() Player {
+func (this Player) Other() Player {
 	if this == White {
 		return Black
 	}
@@ -17,6 +18,8 @@ func (this Player) Alternate() Player {
 func (this Player) String() string {
 	if this == White {
 		return "White"
+	} else if this == Black {
+		return "Black"
 	}
-	return "Black"
+	return ""
 }
