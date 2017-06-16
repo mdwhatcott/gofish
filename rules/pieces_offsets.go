@@ -7,6 +7,13 @@ var (
 		{File: -1, Rank: -1}, {File: 0, Rank: -1}, {File: 1, Rank: -1},
 	}
 
+	knightMoveOffsets = []Square{
+		{File: -1, Rank: 2}, {File: -1, Rank: -2},
+		{File: 1, Rank: 2}, {File: 1, Rank: -2},
+		{File: -2, Rank: 1}, {File: -2, Rank: -1},
+		{File: 2, Rank: 1}, {File: 2, Rank: -1},
+	}
+
 	rookMoveOffsetLines = [][]Square{
 		{
 			{Rank: 1}, {Rank: 2}, {Rank: 3}, {Rank: 4}, {Rank: 5}, {Rank: 6}, {Rank: 7},
@@ -42,13 +49,6 @@ var (
 	}
 
 	queenMoveOffsetLines = append(rookMoveOffsetLines, bishopMoveOffsetLines...)
-
-	knightMoveOffsets = []Square{
-		{File: -1, Rank: 2}, {File: -1, Rank: -2},
-		{File: 1, Rank: 2}, {File: 1, Rank: -2},
-		{File: -2, Rank: 1}, {File: -2, Rank: -1},
-		{File: 2, Rank: 1}, {File: 2, Rank: -1},
-	}
 
 	pawnAdvancementOffsets = []Square{{File: 0, Rank: 1}}
 
