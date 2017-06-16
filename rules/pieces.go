@@ -20,21 +20,11 @@ const (
 	BlackKing   Piece = "k"
 )
 
-var kingMoveOffsets = []Square{
-	{File: -1, Rank: 1}, {File: 0, Rank: 1}, {File: 1, Rank: 1},
-	{File: -1, Rank: 0}, {File: 1, Rank: 0},
-	{File: -1, Rank: -1}, {File: 0, Rank: -1}, {File: 1, Rank: -1},
-}
-
-func (this Piece) CalculateMovesFrom(square Square) (moves []Move) {
+func (this Piece) CalculateMovesFrom(square Square, board map[Square]Piece) (moves []Move) {
 	if this.IsKing() {
-		for _, offset := range kingMoveOffsets {
-			if target := square.Offset(offset); target.IsValid() {
-				moves = append(moves, Move{Piece: this, From: square, To: target})
-			}
-		}
+		return this.calculateKingMovesFrom(square, board)
 	}
-	return moves
+	return nil
 }
 
 func (this Piece) IsKing() bool {
@@ -43,7 +33,7 @@ func (this Piece) IsKing() bool {
 
 func (this Piece) Player() Player {
 	if this == Void {
-		return Neutral
+		return Neither
 	}
 	if strings.ToUpper(string(this)) == string(this) {
 		return White

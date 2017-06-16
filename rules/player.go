@@ -3,7 +3,7 @@ package rules
 type Player int
 
 const (
-	Neutral Player = iota
+	Neither Player = iota
 	White
 	Black
 )

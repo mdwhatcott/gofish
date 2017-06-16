@@ -7,3 +7,21 @@ Fifty-move rule:      https://en.wikipedia.org/wiki/Fifty-move_rule
 Stalemate:            https://en.wikipedia.org/wiki/Stalemate
 Threefold Repetition: https://en.wikipedia.org/wiki/Threefold_repetition
 Promotion:            https://en.wikipedia.org/wiki/Promotion_(chess)
+
+
+// TODO: Rook moves (Can land vertically or horizontally as far as first obstacle that is enemy (capture), is blocked by ally)
+// TODO: Bishop moves: Can land diagonally as far as first obstacle that is enemy (capture), is blocked by ally
+// TODO: Knight moves: Can jump over any piece to land on empty or enemy (capture)
+// TODO: Queen moves: Combined movements of Bishop and Rook
+// TODO: Legal pawn moves: advance 1 rank or optionally 2 ranks if on starting square as long as ending square is empty,
+// TODO: Legal pawn captures: capture diagonally or en-passant if on its "5th" rank and eligible opposing pawn target exists
+// TODO: Pawn promotions
+// TODO: enforce castling limitations
+// TODO: detect discovered check
+// TODO: prevent illegal move into check
+// TODO: detect checkmate
+// TODO: detect stalemate
+// TODO: detect draw by insufficient material
+// TODO: detect three-fold repetition
+// TODO: detect 50-move rule violation
+// TODO: Load/Export PGN

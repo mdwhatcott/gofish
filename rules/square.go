@@ -26,7 +26,7 @@ func (this Square) Offset(delta Square) Square {
 	}
 }
 
-func (this Square) IsValid() bool {
+func (this Square) IsValidSquare() bool {
 	return this.Rank >= 0 && this.Rank < 8 &&
 		this.File >= 0 && this.File < 8
 }

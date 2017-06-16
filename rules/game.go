@@ -93,7 +93,7 @@ func (this *Game) Move(move Move) error {
 func (this *Game) CalculateAvailableMoves() (moves []Move) {
 	for square, piece := range this.squares {
 		if piece.Player() == this.PlayerToMove() {
-			for _, move := range piece.CalculateMovesFrom(square) {
+			for _, move := range piece.CalculateMovesFrom(square, this.squares) {
 				moves = append(moves, move)
 			}
 		}
