@@ -23,8 +23,16 @@ func (this *LegalPieceMovesFixture) assertLegalPieceMoves(
 	moves := filterMovesByPiece(this.game.GetAvailableMoves(piece.Player()), piece)
 
 	this.So(moves, should.HaveLength, len(expectedPotentialTargetSquares))
+
+	actualTargets := []string{}
+	for _, move := range moves {
+		this.So(move.Piece, should.Equal, piece)
+		this.So(move.From.String(), should.Equal, from)
+		this.So(move.To.String(), should.NotResemble, move.From.String())
+		actualTargets = append(actualTargets, move.To.String())
+	}
 	for _, target := range expectedPotentialTargetSquares {
-		this.So(moves, should.Contain, move{Piece: piece, From: Square(from), To: Square(target)})
+		this.So(actualTargets, should.Contain, target)
 	}
 }
 

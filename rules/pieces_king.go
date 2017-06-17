@@ -9,19 +9,28 @@ func (this piece) getKingThreatsFrom(from square) (targets []square) {
 	return targets
 }
 
-func (this piece) calculateKingMovesFrom(square square, board board) (moves []move) {
+func (this piece) calculateKingMovesFrom(from square, board board) (moves []move) {
 	for _, offset := range kingMoveOffsets {
-		target := square.Offset(offset)
+		target := from.Offset(offset)
 		if !target.IsValidSquare() {
 			continue
 		}
-		if board.GetPieceAt(target).Player() == this.Player() {
+		targetPiece := board.GetPieceAt(target)
+		if targetPiece.Player() == this.Player() {
 			continue
 		}
 		if board.IsUnderThreat(target, this.Player().Other()) {
 			continue
 		}
-		moves = append(moves, move{Piece: this, From: square, To: target})
+		moves = append(moves, move{
+			Piece: this,
+
+			From: from,
+			To:   target,
+
+			Capture:   targetPiece,
+			CaptureOn: target,
+		})
 	}
 	return moves
 }

@@ -3,6 +3,7 @@ package rules
 import (
 	"testing"
 
+	"github.com/smartystreets/assertions/should"
 	"github.com/smartystreets/gunit"
 )
 
@@ -94,9 +95,17 @@ func (this *KingMovesFixture) TestSurroundedByUnprotectedEnemyUnits() {
 		"a2", "b2",
 		/***/ "b1")
 }
-
 func (this *KingMovesFixture) TestKingsRepelEachOther() {
 	this.assertLegalPieceMoves(kingCannotApproachOtherKing, "a8", BlackKing)
+}
+
+func (this *KingMovesFixture) TestCaptureMovesAreMarkedAsSuch() {
+	this.game.MustLoadFEN(whiteKingSurroundedByUnprotectedEnemyUnits)
+	moves := filterMovesByPiece(this.game.GetAvailableMoves(White), WhiteKing)
+	for _, move := range moves {
+		this.So(move.Capture, should.Equal, BlackKnight)
+		this.So(move.CaptureOn.String(), should.Equal, move.To.String())
+	}
 }
 
 // TODO: can't move into check
