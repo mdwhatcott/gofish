@@ -33,6 +33,8 @@ func (this piece) CalculateMovesFrom(square square, board board) (moves []move) 
 	switch {
 	case this.IsKing():
 		return this.calculateKingMovesFrom(square, board)
+	case this.IsKnight():
+		return this.calculateKnightMovesFrom(square, board)
 	default:
 		return nil
 	}
@@ -40,6 +42,10 @@ func (this piece) CalculateMovesFrom(square square, board board) (moves []move) 
 
 func (this piece) IsKing() bool {
 	return this == WhiteKing || this == BlackKing
+}
+
+func (this piece) IsKnight() bool {
+	return this == WhiteKnight || this == BlackKnight
 }
 
 func (this piece) Player() player {
