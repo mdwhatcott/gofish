@@ -1,3 +1,4 @@
+FIDE Laws of Chess:   http://www.fide.com/FIDE/handbook/LawsOfChess.pdf
 En-passant Rules:     https://en.wikipedia.org/wiki/En_passant
 Castling Rules:       https://en.wikipedia.org/wiki/Castling
 Check:                https://en.wikipedia.org/wiki/Check_(chess)

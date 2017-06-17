@@ -30,7 +30,9 @@ const (
 	knightCapturesOpposingUnits  = "7k/8/2p1p3/1p3p1p/3N3P/1p3p2/2p1p3/7K w - - 0 1"
 	knightBlockedByFriendlyUnits = "7k/8/2P1P3/1P3P1p/3N3P/1P3P2/2P1P3/7K w - - 0 1"
 
-	// TODO: if moving the knight would cause discovered check, no-can-do. (requires ranged piece movement behavior)
+	// TODO: if the knight's king is in check and the knight can't do anything to prevent check, no knight moves are possible
+	// TODO: if the knight's king king is in check and the knight can remove check by blocking or capturing the aggressor, those are the only knight moves available
+	// TODO: if moving the knig	ht would cause discovered check, no knight moves are possible (requires ranged piece movement behavior).
 )
 
 func (this *KnightMovesFixture) Test() {
