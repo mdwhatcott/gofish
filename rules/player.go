@@ -1,21 +1,21 @@
 package rules
 
-type Player int
+type player int
 
 const (
-	Neither Player = iota
+	Neither player = iota
 	White
 	Black
 )
 
-func (this Player) Other() Player {
+func (this player) Other() player {
 	if this == White {
 		return Black
 	}
 	return White
 }
 
-func (this Player) String() string {
+func (this player) String() string {
 	if this == White {
 		return "White"
 	} else if this == Black {

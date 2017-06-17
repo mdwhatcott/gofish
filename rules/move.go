@@ -1,12 +1,14 @@
 package rules
 
-type Move struct {
-	Piece Piece
-	From  Square
-	To    Square
+type move struct {
+	Piece piece
+	From  square
+	To    square
 
-	Captures   Piece
-	CapturesOn Square
+	Promotion piece
 
-	Castles bool // When true, the Piece will represent the involved Rook.
+	Capture   piece
+	CaptureOn square
+
+	Castles bool // When true, the Piece will represent the Rook involved.
 }

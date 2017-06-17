@@ -14,8 +14,8 @@ const startingPositionFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq 
 type FEN struct {
 	buffer *bytes.Buffer
 
-	squares []Piece
-	toMove  Player
+	squares []piece
+	toMove  player
 
 	whiteCanCastleKingside  bool
 	whiteCanCastleQueenside bool
@@ -48,14 +48,14 @@ func ParseFEN(raw string) (this *FEN, err error) {
 }
 func (this *FEN) parseSquares(fenBoard string) {
 	ranks := strings.Split(fenBoard, "/")
-	this.squares = make([]Piece, 64)
+	this.squares = make([]piece, 64)
 	for r, rank := range ranks {
 		square := 64 - ((r + 1) * 8)
 		for _, c := range rank {
 			if unicode.IsDigit(c) {
 				square += int(c - '0')
 			} else {
-				this.squares[square] = Piece(string(c))
+				this.squares[square] = piece(string(c))
 				square++
 			}
 		}
@@ -96,7 +96,7 @@ func (this *FEN) parseFullMoveCount(count string) (err error) {
 
 /**************************************************************************/
 
-func PrepareFEN(squares map[Square]Piece, game *Game) *FEN {
+func PrepareFEN(squares map[square]piece, game *Game) *FEN {
 	return &FEN{
 		buffer:                  new(bytes.Buffer),
 		squares:                 copyMapToArray(squares),
@@ -111,8 +111,8 @@ func PrepareFEN(squares map[Square]Piece, game *Game) *FEN {
 	}
 }
 
-func copyMapToArray(squares map[Square]Piece) []Piece {
-	pieces := make([]Piece, len(squares))
+func copyMapToArray(squares map[square]piece) []piece {
+	pieces := make([]piece, len(squares))
 	for square, piece := range squares {
 		pieces[square.Int()] = piece
 	}

@@ -3,8 +3,8 @@ package rules
 import "log"
 
 type Game struct {
-	squares map[Square]Piece
-	player  Player
+	squares map[square]piece
+	player  player
 
 	fullMoveCount int
 	halfMoveCount int
@@ -16,7 +16,7 @@ type Game struct {
 }
 
 func NewGame() *Game {
-	game := &Game{squares: make(map[Square]Piece, 64)}
+	game := &Game{squares: make(map[square]piece, 64)}
 	game.Reset()
 	return game
 }
@@ -36,7 +36,7 @@ func (this *Game) LoadFEN(raw string) error {
 		return err
 	}
 	for s, piece := range fen.squares {
-		this.squares[NewSquare(s)] = piece
+		this.squares[IntSquare(s)] = piece
 	}
 	this.player = fen.toMove
 	this.blackCanCastleQueenside = fen.blackCanCastleQueenside
@@ -47,12 +47,11 @@ func (this *Game) LoadFEN(raw string) error {
 	this.halfMoveCount = fen.halfMoveCount
 	return nil
 }
-
 func (this *Game) ExportFEN() string {
 	return PrepareFEN(this.squares, this).String()
 }
 
-func (this *Game) PlayerToMove() Player {
+func (this *Game) PlayerToMove() player {
 	return this.player
 }
 
@@ -68,7 +67,7 @@ func (this *Game) HalfMoveCount() int {
 	return this.halfMoveCount
 }
 
-func (this *Game) CanCastleKingside(player Player) bool {
+func (this *Game) CanCastleKingside(player player) bool {
 	if player == White {
 		return this.whiteCanCastleKingside
 	} else {
@@ -76,7 +75,7 @@ func (this *Game) CanCastleKingside(player Player) bool {
 	}
 }
 
-func (this *Game) CanCastleQueenside(player Player) bool {
+func (this *Game) CanCastleQueenside(player player) bool {
 	if player == White {
 		return this.whiteCanCastleQueenside
 	} else {
@@ -84,16 +83,39 @@ func (this *Game) CanCastleQueenside(player Player) bool {
 	}
 }
 
-func (this *Game) Move(move Move) error {
+/* board interface: *******************************************************/
+
+func (this *Game) Execute(move move) {
 	this.squares[move.To], this.squares[move.From] = this.squares[move.From], Void
 	this.player = this.player.Other()
-	return nil
 }
 
-func (this *Game) CalculateAvailableMoves() (moves []Move) {
+func (this *Game) TakeBack(move move) {
+	this.squares[move.From], this.squares[move.To] = this.squares[move.To], Void
+	this.player = this.player.Other()
+}
+
+func (this *Game) GetPieceAt(square square) piece {
+	return this.squares[square]
+}
+
+func (this *Game) IsUnderThreat(subject square, player player) bool {
 	for square, piece := range this.squares {
-		if piece.Player() == this.PlayerToMove() {
-			for _, move := range piece.CalculateMovesFrom(square, this.squares) {
+		if piece.Player() == player {
+			for _, covered := range piece.GetThreatsFrom(square) {
+				if covered == subject {
+					return true
+				}
+			}
+		}
+	}
+	return false
+}
+
+func (this *Game) GetAvailableMoves(player player) (moves []move) {
+	for square, piece := range this.squares {
+		if piece.Player() == player {
+			for _, move := range piece.CalculateMovesFrom(square, this) {
 				moves = append(moves, move)
 			}
 		}

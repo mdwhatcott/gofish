@@ -2,36 +2,47 @@ package rules
 
 import "strings"
 
-type Piece string
+type piece string
 
 const (
-	Void        Piece = ""
-	WhitePawn   Piece = "P"
-	WhiteKnight Piece = "N"
-	WhiteBishop Piece = "B"
-	WhiteRook   Piece = "R"
-	WhiteQueen  Piece = "Q"
-	WhiteKing   Piece = "K"
-	BlackPawn   Piece = "p"
-	BlackKnight Piece = "n"
-	BlackBishop Piece = "b"
-	BlackRook   Piece = "r"
-	BlackQueen  Piece = "q"
-	BlackKing   Piece = "k"
+	Void        piece = ""
+	WhitePawn   piece = "P"
+	WhiteKnight piece = "N"
+	WhiteBishop piece = "B"
+	WhiteRook   piece = "R"
+	WhiteQueen  piece = "Q"
+	WhiteKing   piece = "K"
+	BlackPawn   piece = "p"
+	BlackKnight piece = "n"
+	BlackBishop piece = "b"
+	BlackRook   piece = "r"
+	BlackQueen  piece = "q"
+	BlackKing   piece = "k"
 )
 
-func (this Piece) CalculateMovesFrom(square Square, board map[Square]Piece) (moves []Move) {
-	if this.IsKing() {
-		return this.calculateKingMovesFrom(square, board)
+func (this piece) GetThreatsFrom(from square) []square {
+	switch {
+	case this.IsKing():
+		return this.getKingThreatsFrom(from)
+	default:
+		return nil
 	}
-	return nil
 }
 
-func (this Piece) IsKing() bool {
+func (this piece) CalculateMovesFrom(square square, board board) (moves []move) {
+	switch {
+	case this.IsKing():
+		return this.calculateKingMovesFrom(square, board)
+	default:
+		return nil
+	}
+}
+
+func (this piece) IsKing() bool {
 	return this == WhiteKing || this == BlackKing
 }
 
-func (this Piece) Player() Player {
+func (this piece) Player() player {
 	if this == Void {
 		return Neither
 	}
