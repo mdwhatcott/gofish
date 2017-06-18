@@ -59,37 +59,5 @@ func (this *GameFixture) TestLoadFEN() { // TODO: test many more pieces and scen
 	this.So(err, should.BeNil)
 	this.So(this.game.ExportFEN(), should.Equal, kingsOnBackRanks)
 }
-func (this *GameFixture) TestLegalFirstMovesForWhite() {
-	moves := this.game.GetLegalMoves(this.game.PlayerToMove())
-	this.assertAllLegalMoves(moves,
-		"a3", "a4",
-		"b3", "b4",
-		"c3", "c4",
-		"d3", "d4",
-		"e3", "e4",
-		"f3", "f4",
-		"g3", "g4",
-		"h3", "h4",
-		"Na3", "Nc3",
-		"Nf3", "Nh3",
-	)
-}
-
-func (this *GameFixture) TestLegalFirstMovesForBlack() {
-	this.game.Execute(move{From: Square("a2"), To: Square("a3"), Piece: WhitePawn})
-	moves := this.game.GetLegalMoves(this.game.PlayerToMove())
-	this.assertAllLegalMoves(moves,
-		"a6", "a5",
-		"b6", "b5",
-		"c6", "c5",
-		"d6", "d5",
-		"e6", "e5",
-		"f6", "f5",
-		"g6", "g5",
-		"h6", "h5",
-		"Na6", "Nc6",
-		"Nf6", "Nh6",
-	)
-}
 
 const positionAfter1A3 = "rnbqkbnr/pppppppp/8/8/8/P7/1PPPPPPP/RNBQKBNR b KQkq - 0 1"

@@ -2,11 +2,16 @@ package rules
 
 import (
 	"sort"
+	"testing"
 
 	"github.com/mdwhatcott/gofish/console"
 	"github.com/smartystreets/assertions/should"
 	"github.com/smartystreets/gunit"
 )
+
+func TestLegalPieceMovesFixture(t *testing.T) {
+	gunit.Run(new(LegalPieceMovesFixture), t)
+}
 
 type LegalPieceMovesFixture struct {
 	*gunit.Fixture
@@ -14,8 +19,45 @@ type LegalPieceMovesFixture struct {
 	game *Game
 }
 
+func (this *LegalPieceMovesFixture) Setup() {
+	this.game = NewGame()
+}
+
 func NewLegalGameMovesFixture(fixture *gunit.Fixture) *LegalPieceMovesFixture {
-	return &LegalPieceMovesFixture{Fixture: fixture, game: NewGame()}
+	this := &LegalPieceMovesFixture{Fixture: fixture}
+	this.Setup()
+	return this
+}
+
+func (this *LegalPieceMovesFixture) TestLegalFirstMovesForWhite() {
+	this.assertAllLegalMoves(this.game.GetLegalMoves(this.game.PlayerToMove()),
+		"a3", "a4",
+		"b3", "b4",
+		"c3", "c4",
+		"d3", "d4",
+		"e3", "e4",
+		"f3", "f4",
+		"g3", "g4",
+		"h3", "h4",
+		"Na3", "Nc3",
+		"Nf3", "Nh3",
+	)
+}
+
+func (this *LegalPieceMovesFixture) TestLegalFirstMovesForBlack() {
+	this.game.Execute(move{From: Square("a2"), To: Square("a3"), Piece: WhitePawn})
+	this.assertAllLegalMoves(this.game.GetLegalMoves(this.game.PlayerToMove()),
+		"a6", "a5",
+		"b6", "b5",
+		"c6", "c5",
+		"d6", "d5",
+		"e6", "e5",
+		"f6", "f5",
+		"g6", "g5",
+		"h6", "h5",
+		"Na6", "Nc6",
+		"Nf6", "Nh6",
+	)
 }
 
 func (this *LegalPieceMovesFixture) assertAllLegalMoves(actualMoves []move, expectedMovesSAN ...string) {
