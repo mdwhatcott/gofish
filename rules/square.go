@@ -1,40 +1,67 @@
 package rules
 
 type square struct {
-	Rank int
-	File int
+	rank int
+	file int
 }
 
 func IntSquare(i int) square {
 	return square{
-		Rank: i / 8,
-		File: i % 8,
+		rank: i / 8,
+		file: i % 8,
 	}
 }
 
 func Square(algebraic string) square {
 	return square{
-		File: int(algebraic[0] - 'a'),
-		Rank: int(algebraic[1] - '1'),
+		file: int(algebraic[0] - 'a'),
+		rank: int(algebraic[1] - '1'),
 	}
 }
 
 func (this square) Offset(delta square) square {
 	return square{
-		Rank: this.Rank + delta.Rank,
-		File: this.File + delta.File,
+		rank: this.rank + delta.rank,
+		file: this.file + delta.file,
 	}
 }
 
 func (this square) IsValidSquare() bool {
-	return this.Rank >= 0 && this.Rank < 8 &&
-		this.File >= 0 && this.File < 8
+	return this.rank >= 0 && this.rank < 8 &&
+		this.file >= 0 && this.file < 8
 }
 
 func (this square) String() string {
-	return string('a'+this.File) + string('1'+this.Rank)
+	return string('a'+this.file) + string('1'+this.rank)
 }
 
 func (this square) Int() int {
-	return this.Rank*8 + this.File
+	return this.rank*8 + this.file
+}
+
+func (this square) Rank() string {
+	return string(this.rank + 1 + '0')
+}
+func (this square) File() string {
+	return string('a' + this.file)
+}
+
+/**************************************************************************/
+
+type squares []square
+
+func (this squares) ranksAreUnique() bool {
+	unique := make(map[string]struct{})
+	for _, square := range this {
+		unique[square.Rank()] = struct{}{}
+	}
+	return len(unique) == len(this)
+}
+
+func (this squares) filesAreUnique() bool {
+	unique := make(map[string]struct{})
+	for _, square := range this {
+		unique[square.File()] = struct{}{}
+	}
+	return len(unique) == len(this)
 }

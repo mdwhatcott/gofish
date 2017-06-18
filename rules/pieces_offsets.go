@@ -2,60 +2,66 @@ package rules
 
 var (
 	kingMoveOffsets = []square{
-		{File: -1, Rank: 1}, {File: 0, Rank: 1}, {File: 1, Rank: 1},
-		{File: -1, Rank: 0} /*****************/, {File: 1, Rank: 0},
-		{File: -1, Rank: -1}, {File: 0, Rank: -1}, {File: 1, Rank: -1},
+		{file: -1, rank: 1}, {file: 0, rank: 1}, {file: 1, rank: 1},
+		{file: -1, rank: 0} /*****************/, {file: 1, rank: 0},
+		{file: -1, rank: -1}, {file: 0, rank: -1}, {file: 1, rank: -1},
 	}
 
 	knightMoveOffsets = []square{
-		{File: -1, Rank: 2}, {File: -1, Rank: -2},
-		{File: 1, Rank: 2}, {File: 1, Rank: -2},
-		{File: -2, Rank: 1}, {File: -2, Rank: -1},
-		{File: 2, Rank: 1}, {File: 2, Rank: -1},
+		{file: -1, rank: 2}, {file: -1, rank: -2},
+		{file: 1, rank: 2}, {file: 1, rank: -2},
+		{file: -2, rank: 1}, {file: -2, rank: -1},
+		{file: 2, rank: 1}, {file: 2, rank: -1},
 	}
 
 	rookMoveOffsetLines = [][]square{
 		{
-			{Rank: 1}, {Rank: 2}, {Rank: 3}, {Rank: 4}, {Rank: 5}, {Rank: 6}, {Rank: 7},
+			{rank: 1}, {rank: 2}, {rank: 3}, {rank: 4}, {rank: 5}, {rank: 6}, {rank: 7},
 		},
 		{
-			{Rank: -1}, {Rank: -2}, {Rank: -3}, {Rank: -4}, {Rank: -5}, {Rank: -6}, {Rank: -7},
+			{rank: -1}, {rank: -2}, {rank: -3}, {rank: -4}, {rank: -5}, {rank: -6}, {rank: -7},
 		},
 		{
-			{File: 1}, {File: 2}, {File: 3}, {File: 4}, {File: 5}, {File: 6}, {File: 7},
+			{file: 1}, {file: 2}, {file: 3}, {file: 4}, {file: 5}, {file: 6}, {file: 7},
 		},
 		{
-			{File: -1}, {File: -2}, {File: -3}, {File: -4}, {File: -5}, {File: -6}, {File: -7},
+			{file: -1}, {file: -2}, {file: -3}, {file: -4}, {file: -5}, {file: -6}, {file: -7},
 		},
 	}
 
 	bishopMoveOffsetLines = [][]square{
 		{
-			{Rank: 1, File: 1}, {Rank: 2, File: 2}, {Rank: 3, File: 3}, {Rank: 4, File: 4},
-			{Rank: 5, File: 5}, {Rank: 6, File: 6}, {Rank: 7, File: 7},
+			{rank: 1, file: 1}, {rank: 2, file: 2}, {rank: 3, file: 3}, {rank: 4, file: 4},
+			{rank: 5, file: 5}, {rank: 6, file: 6}, {rank: 7, file: 7},
 		},
 		{
-			{Rank: -1, File: 1}, {Rank: -2, File: 2}, {Rank: -3, File: 3}, {Rank: -4, File: 4},
-			{Rank: -5, File: 5}, {Rank: -6, File: 6}, {Rank: -7, File: 7},
+			{rank: -1, file: 1}, {rank: -2, file: 2}, {rank: -3, file: 3}, {rank: -4, file: 4},
+			{rank: -5, file: 5}, {rank: -6, file: 6}, {rank: -7, file: 7},
 		},
 		{
-			{Rank: 1, File: -1}, {Rank: 2, File: -2}, {Rank: 3, File: -3}, {Rank: 4, File: -4},
-			{Rank: 5, File: -5}, {Rank: 6, File: -6}, {Rank: 7, File: -7},
+			{rank: 1, file: -1}, {rank: 2, file: -2}, {rank: 3, file: -3}, {rank: 4, file: -4},
+			{rank: 5, file: -5}, {rank: 6, file: -6}, {rank: 7, file: -7},
 		},
 		{
-			{Rank: -1, File: -1}, {Rank: -2, File: -2}, {Rank: -3, File: -3}, {Rank: -4, File: -4},
-			{Rank: -5, File: -5}, {Rank: -6, File: -6}, {Rank: -7, File: -7},
+			{rank: -1, file: -1}, {rank: -2, file: -2}, {rank: -3, file: -3}, {rank: -4, file: -4},
+			{rank: -5, file: -5}, {rank: -6, file: -6}, {rank: -7, file: -7},
 		},
 	}
 
 	queenMoveOffsetLines = append(rookMoveOffsetLines, bishopMoveOffsetLines...)
 
-	pawnAdvancementOffsets = []square{{File: 0, Rank: 1}}
+	whitePawnAdvancementOffsets = []square{{file: 0, rank: 1}}
+	blackPawnAdvancementOffsets = []square{{file: 0, rank: -1}}
 
-	pawnInitialAdvancementOffsets = append(pawnAdvancementOffsets, square{File: 0, Rank: 2})
+	whitePawnInitialAdvancementOffsets = append(whitePawnAdvancementOffsets, square{file: 0, rank: 2})
+	blackPawnInitialAdvancementOffsets = append(blackPawnAdvancementOffsets, square{file: 0, rank: -2})
 
-	pawnCaptureOffsets = []square{
-		{File: -1, Rank: 1},
-		{File: 1, Rank: 1},
+	whitePawnCaptureOffsets = []square{
+		{file: -1, rank: 1},
+		{file: 1, rank: 1},
+	}
+	blackPawnCaptureOffsets = []square{
+		{file: -1, rank: -1},
+		{file: 1, rank: -1},
 	}
 )

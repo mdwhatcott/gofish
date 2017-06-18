@@ -112,7 +112,7 @@ func (this *Game) IsUnderThreat(subject square, player player) bool {
 	return false
 }
 
-func (this *Game) GetAvailableMoves(player player) (moves []move) {
+func (this *Game) GetLegalMoves(player player) (moves []move) {
 	for square, piece := range this.squares {
 		if piece.Player() == player {
 			for _, move := range piece.CalculateMovesFrom(square, this) {

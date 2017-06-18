@@ -46,22 +46,22 @@ func (this *SquareFixture) TestOffsetsProduceInvalidSquaresAsTheyGoOffTheBoard()
 	)
 
 	for _, s := range leftEdge { // Falling off the left edge:
-		this.So(Square(s).Offset(square{File: -1}).IsValidSquare(), should.BeFalse)
+		this.So(Square(s).Offset(square{file: -1}).IsValidSquare(), should.BeFalse)
 	}
 	for _, s := range rightEdge { // Falling off the right edge:
-		this.So(Square(s).Offset(square{File: 1}).IsValidSquare(), should.BeFalse)
+		this.So(Square(s).Offset(square{file: 1}).IsValidSquare(), should.BeFalse)
 	}
 	for _, s := range bottomEdge { // Falling off the bottom edge:
-		this.So(Square(s).Offset(square{Rank: -1}).IsValidSquare(), should.BeFalse)
+		this.So(Square(s).Offset(square{rank: -1}).IsValidSquare(), should.BeFalse)
 	}
 	for _, s := range topEdge { // Falling off the top edge:
-		this.So(Square(s).Offset(square{Rank: 1}).IsValidSquare(), should.BeFalse)
+		this.So(Square(s).Offset(square{rank: 1}).IsValidSquare(), should.BeFalse)
 	}
 	for _, s := range inner { // Offsets of 1 are fine for non-edge squares:
 		from := Square(s)
-		this.So(from.Offset(square{Rank: 1}).IsValidSquare(), should.BeTrue)
-		this.So(from.Offset(square{Rank: -1}).IsValidSquare(), should.BeTrue)
-		this.So(from.Offset(square{File: 1}).IsValidSquare(), should.BeTrue)
-		this.So(from.Offset(square{File: -1}).IsValidSquare(), should.BeTrue)
+		this.So(from.Offset(square{rank: 1}).IsValidSquare(), should.BeTrue)
+		this.So(from.Offset(square{rank: -1}).IsValidSquare(), should.BeTrue)
+		this.So(from.Offset(square{file: 1}).IsValidSquare(), should.BeTrue)
+		this.So(from.Offset(square{file: -1}).IsValidSquare(), should.BeTrue)
 	}
 }

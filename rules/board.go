@@ -7,5 +7,5 @@ type board interface {
 	GetPieceAt(square) piece
 	//IsInCheck(player) bool
 	IsUnderThreat(square, player) bool
-	GetAvailableMoves(player player) []move
+	GetLegalMoves(player player) []move
 }

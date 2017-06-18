@@ -28,8 +28,8 @@ func (this piece) calculateKingMovesFrom(from square, board board) (moves []move
 			From: from,
 			To:   target,
 
-			Capture:   targetPiece,
-			CaptureOn: target,
+			Captured:   targetPiece,
+			CapturedOn: target,
 		})
 	}
 	return moves

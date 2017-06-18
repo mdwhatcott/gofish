@@ -11,11 +11,11 @@ func (this piece) calculateKnightMovesFrom(square square, board board) (moves []
 			continue
 		}
 		moves = append(moves, move{
-			Piece:     this,
-			From:      square,
-			To:        target,
-			Capture:   targetPiece,
-			CaptureOn: target,
+			Piece:      this,
+			From:       square,
+			To:         target,
+			Captured:   targetPiece,
+			CapturedOn: target,
 		})
 	}
 	return moves

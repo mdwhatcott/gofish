@@ -1,8 +1,11 @@
 package rules
 
 import (
+	"sort"
+
 	"github.com/smartystreets/assertions/should"
 	"github.com/smartystreets/gunit"
+	"github.com/mdwhatcott/gofish/console"
 )
 
 type LegalPieceMovesFixture struct {
@@ -17,10 +20,13 @@ func NewLegalGameMovesFixture(fixture *gunit.Fixture) *LegalPieceMovesFixture {
 
 func (this *LegalPieceMovesFixture) assertLegalPieceMoves(
 	position string, from string, piece piece, expectedPotentialTargetSquares ...string) {
+	if len(expectedPotentialTargetSquares) == 0 {
+		expectedPotentialTargetSquares = []string{}
+	}
 
 	this.game.MustLoadFEN(position)
 
-	moves := filterMovesByPiece(this.game.GetAvailableMoves(piece.Player()), piece)
+	moves := filterMovesByPiece(this.game.GetLegalMoves(piece.Player()), piece)
 
 	this.So(moves, should.HaveLength, len(expectedPotentialTargetSquares))
 
@@ -31,8 +37,13 @@ func (this *LegalPieceMovesFixture) assertLegalPieceMoves(
 		this.So(move.To.String(), should.NotResemble, move.From.String())
 		actualTargets = append(actualTargets, move.To.String())
 	}
-	for _, target := range expectedPotentialTargetSquares {
-		this.So(actualTargets, should.Contain, target)
+	sort.Strings(actualTargets)
+	sort.Strings(expectedPotentialTargetSquares)
+	this.So(actualTargets, should.Resemble, expectedPotentialTargetSquares)
+	if this.Failed() {
+		picture := console.NewBoard()
+		picture.Setup(position)
+		this.Println(console.NewCoordinateBoard(picture.String()))
 	}
 }
 

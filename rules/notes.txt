@@ -26,3 +26,8 @@ Promotion:            https://en.wikipedia.org/wiki/Promotion_(chess)
 // TODO: detect three-fold repetition
 // TODO: detect 50-move rule violation
 // TODO: Load/Export PGN
+
+
+Interesting games to test with:
+
+Checkmate via castling: http://www.chessgames.com/perl/chessgame?gid=1238144

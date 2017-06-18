@@ -101,10 +101,10 @@ func (this *KingMovesFixture) TestKingsRepelEachOther() {
 
 func (this *KingMovesFixture) TestCaptureMovesAreMarkedAsSuch() {
 	this.game.MustLoadFEN(whiteKingSurroundedByUnprotectedEnemyUnits)
-	moves := filterMovesByPiece(this.game.GetAvailableMoves(White), WhiteKing)
+	moves := filterMovesByPiece(this.game.GetLegalMoves(White), WhiteKing)
 	for _, move := range moves {
-		this.So(move.Capture, should.Equal, BlackKnight)
-		this.So(move.CaptureOn.String(), should.Equal, move.To.String())
+		this.So(move.Captured, should.Equal, BlackKnight)
+		this.So(move.CapturedOn.String(), should.Equal, move.To.String())
 	}
 }
 
