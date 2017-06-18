@@ -8,10 +8,6 @@ const (
 	Black   player = "b"
 )
 
-func (this player) String() string {
-	return string(this)
-}
-
 func (this player) Other() player {
 	if this == White {
 		return Black

@@ -41,59 +41,59 @@ const (
 func (this *KingMovesFixture) TestAwayFromAnyEdge() {
 	this.assertLegalPieceMoves(
 		whiteKingAwayFromAnyEdge, "b2", WhiteKing,
-		"a1", "a2", "a3",
-		"b1" /***/, "b3",
-		"c1", "c2", "c3")
+		"Ka1", "Ka2", "Ka3",
+		"Kb1" /****/, "Kb3",
+		"Kc1", "Kc2", "Kc3")
 }
 func (this *KingMovesFixture) TestOnBottomEdge() {
 	this.assertLegalPieceMoves(whiteKingOnBottomEdge, "b1", WhiteKing,
-		"a2", "b2", "c2",
-		"a1" /***/, "c1")
+		"Ka2", "Kb2", "Kc2",
+		"Ka1" /****/, "Kc1")
 }
 func (this *KingMovesFixture) TestOnTopEdge() {
 	this.assertLegalPieceMoves(blackKingOnTopEdge, "b8", BlackKing,
-		"a8" /***/, "c8",
-		"a7", "b7", "c7")
+		"Ka8" /****/, "Kc8",
+		"Ka7", "Kb7", "Kc7")
 }
 func (this *KingMovesFixture) TestOnLeftEdge() {
 	this.assertLegalPieceMoves(blackKingOnLeftEdge, "a7", BlackKing,
-		"a8", "b8",
-		/***/ "b7",
-		"a6", "b6")
+		"Ka8", "Kb8",
+		/****/ "Kb7",
+		"Ka6", "Kb6")
 }
 func (this *KingMovesFixture) TestOnRightEdge() {
 	this.assertLegalPieceMoves(blackKingOnRightEdge, "h7", BlackKing,
-		"g8", "h8",
-		"g7",
-		"g6", "h6")
+		"Kg8", "Kh8",
+		"Kg7",
+		"Kg6", "Kh6")
 }
 func (this *KingMovesFixture) TestInBottomLeftCorner() {
 	this.assertLegalPieceMoves(whiteKingInBottomLeftCorner, "a1", WhiteKing,
-		"a2", "b2",
-		/***/ "b1")
+		"Ka2", "Kb2",
+		/****/ "Kb1")
 }
 func (this *KingMovesFixture) TestInBottomRightCorner() {
 	this.assertLegalPieceMoves(whiteKingInBottomRightCorner, "h1", WhiteKing,
-		"g2", "h2",
-		"g1" /***/)
+		"Kg2", "Kh2",
+		"Kg1" /****/)
 }
 func (this *KingMovesFixture) TestInTopLeftCorner() {
 	this.assertLegalPieceMoves(blackKingInTopLeftCorner, "a8", BlackKing,
-		/***/ "b8",
-		"a7", "b7")
+		/****/ "Kb8",
+		"Ka7", "Kb7")
 }
 func (this *KingMovesFixture) TestInTopRightCorner() {
 	this.assertLegalPieceMoves(blackKingInTopRightCorner, "h8", BlackKing,
-		"g8", /***/
-		"g7", "h7")
+		"Kg8", /***/
+		"Kg7", "Kh7")
 }
 func (this *KingMovesFixture) TestBlockedByFriendlyUnits() {
 	this.assertLegalPieceMoves(whiteKingSurroundedByFriendlyUnits, "c3", WhiteKing)
 }
 func (this *KingMovesFixture) TestSurroundedByUnprotectedEnemyUnits() {
 	this.assertLegalPieceMoves(whiteKingSurroundedByUnprotectedEnemyUnits, "a1", WhiteKing,
-		"a2", "b2",
-		/***/ "b1")
+		"Kxa2", "Kxb2",
+		/*****/ "Kxb1")
 }
 func (this *KingMovesFixture) TestKingsRepelEachOther() {
 	this.assertLegalPieceMoves(kingCannotApproachOtherKing, "a8", BlackKing)

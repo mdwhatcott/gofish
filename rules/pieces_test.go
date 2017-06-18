@@ -3,9 +3,9 @@ package rules
 import (
 	"sort"
 
+	"github.com/mdwhatcott/gofish/console"
 	"github.com/smartystreets/assertions/should"
 	"github.com/smartystreets/gunit"
-	"github.com/mdwhatcott/gofish/console"
 )
 
 type LegalPieceMovesFixture struct {
@@ -18,28 +18,46 @@ func NewLegalGameMovesFixture(fixture *gunit.Fixture) *LegalPieceMovesFixture {
 	return &LegalPieceMovesFixture{Fixture: fixture, game: NewGame()}
 }
 
+func (this *LegalPieceMovesFixture) assertAllLegalMoves(actualMoves []move, expectedMovesSAN ...string) {
+	this.So(actualMoves, should.HaveLength, len(expectedMovesSAN))
+	actualMovesSan := []string{}
+	for _, move := range actualMoves {
+		this.So(move.To.String(), should.NotResemble, move.From.String())
+		actualMovesSan = append(actualMovesSan, move.String())
+	}
+	sort.Strings(actualMovesSan)
+	sort.Strings(expectedMovesSAN)
+	this.So(actualMovesSan, should.Resemble, expectedMovesSAN)
+	if this.Failed() {
+		picture := console.NewBoard()
+		picture.Setup(this.game.ExportFEN())
+		this.Println(console.NewCoordinateBoard(picture.String()))
+	}
+}
+
 func (this *LegalPieceMovesFixture) assertLegalPieceMoves(
-	position string, from string, piece piece, expectedPotentialTargetSquares ...string) {
-	if len(expectedPotentialTargetSquares) == 0 {
-		expectedPotentialTargetSquares = []string{}
+	position string, from string, piece piece, expectedPieceMovesSAN ...string) {
+
+	if len(expectedPieceMovesSAN) == 0 {
+		expectedPieceMovesSAN = []string{}
 	}
 
 	this.game.MustLoadFEN(position)
 
-	moves := filterMovesByPiece(this.game.GetLegalMoves(piece.Player()), piece)
-
-	this.So(moves, should.HaveLength, len(expectedPotentialTargetSquares))
+	moves := this.game.GetLegalMoves(piece.Player())
+	actualPieceMoves := filterMovesByPiece(moves, piece)
+	this.So(actualPieceMoves, should.HaveLength, len(expectedPieceMovesSAN))
 
 	actualTargets := []string{}
-	for _, move := range moves {
+	for _, move := range actualPieceMoves {
 		this.So(move.Piece, should.Equal, piece)
 		this.So(move.From.String(), should.Equal, from)
 		this.So(move.To.String(), should.NotResemble, move.From.String())
-		actualTargets = append(actualTargets, move.To.String())
+		actualTargets = append(actualTargets, move.String())
 	}
 	sort.Strings(actualTargets)
-	sort.Strings(expectedPotentialTargetSquares)
-	this.So(actualTargets, should.Resemble, expectedPotentialTargetSquares)
+	sort.Strings(expectedPieceMovesSAN)
+	this.So(actualTargets, should.Resemble, expectedPieceMovesSAN)
 	if this.Failed() {
 		picture := console.NewBoard()
 		picture.Setup(position)

@@ -32,14 +32,14 @@ const (
 )
 
 func (this *KnightMovesFixture) Test() {
-	this.assertLegalPieceMoves(knight8TargetSquares, "c3", WhiteKnight, "a2", "b1", "d1", "e2", "e4", "d5", "b5", "a4")
-	this.assertLegalPieceMoves(knight6TargetSquares, "c2", WhiteKnight, "a1", "e1", "e3", "d4", "b4", "a3")
-	this.assertLegalPieceMoves(knight4TargetSquares, "b2", WhiteKnight, "a4", "c4", "d3", "d1")
-	this.assertLegalPieceMoves(knight3TargetSquares, "b1", WhiteKnight, "a3", "c3", "d2")
-	this.assertLegalPieceMoves(knight2TargetSquares, "a1", WhiteKnight, "b3", "c2")
+	this.assertLegalPieceMoves(knight8TargetSquares, "c3", WhiteKnight, "Na2", "Nb1", "Nd1", "Ne2", "Ne4", "Nd5", "Nb5", "Na4")
+	this.assertLegalPieceMoves(knight6TargetSquares, "c2", WhiteKnight, "Na1", "Ne1", "Ne3", "Nd4", "Nb4", "Na3")
+	this.assertLegalPieceMoves(knight4TargetSquares, "b2", WhiteKnight, "Na4", "Nc4", "Nd3", "Nd1")
+	this.assertLegalPieceMoves(knight3TargetSquares, "b1", WhiteKnight, "Na3", "Nc3", "Nd2")
+	this.assertLegalPieceMoves(knight2TargetSquares, "a1", WhiteKnight, "Nb3", "Nc2")
 	this.assertLegalPieceMoves(knightBlockedByFriendlyUnits, "d4", WhiteKnight)
 	this.assertLegalPieceMoves(knightCapturesOpposingUnits, "d4", WhiteKnight,
-		"b3", "b5", "c2", "c6", "e2", "e6", "f3", "f5")
+		"Nxb3", "Nxb5", "Nxc2", "Nxc6", "Nxe2", "Nxe6", "Nxf3", "Nxf5")
 }
 
 func (this *KnightMovesFixture) TestCaptureMovesAreMarkedAsSuch() {

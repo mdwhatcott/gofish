@@ -44,8 +44,8 @@ func (this *PawnMovesFixture) Test() {
 	this.assertLegalPieceMoves(blackInitialPawnAdvancement, "a7", BlackPawn, "a6", "a5")
 	this.assertLegalPieceMoves(whiteBlockedPawn, "a4", WhitePawn)
 	this.assertLegalPieceMoves(blackBlockedPawn, "a5", BlackPawn)
-	this.assertLegalPieceMoves(whiteSinglePawnCapture, "d4", WhitePawn, "d5", "e5")
-	this.assertLegalPieceMoves(blackSinglePawnCapture, "e5", BlackPawn, "e4", "d4")
-	this.assertLegalPieceMoves(whiteDoublePawnCapture, "b4", WhitePawn, "a5", "b5", "c5")
-	this.assertLegalPieceMoves(blackDoublePawnCapture, "g5", BlackPawn, "f4", "g4", "h4")
+	this.assertLegalPieceMoves(whiteSinglePawnCapture, "d4", WhitePawn, "d5", "dxe5")
+	this.assertLegalPieceMoves(blackSinglePawnCapture, "e5", BlackPawn, "e4", "exd4")
+	this.assertLegalPieceMoves(whiteDoublePawnCapture, "b4", WhitePawn, "bxa5", "b5", "bxc5")
+	this.assertLegalPieceMoves(blackDoublePawnCapture, "g5", BlackPawn, "gxf4", "g4", "gxh4")
 }

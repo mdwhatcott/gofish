@@ -30,7 +30,13 @@ func (this piece) calculatePawnMovesFrom(from square, board board) (moves []move
 		targetSquare := from.Offset(offset)
 		targetPiece := board.GetPieceAt(targetSquare)
 		if targetPiece.Player() == this.Player().Other() {
-			moves = append(moves, move{Piece: this, From: from, To: targetSquare})
+			moves = append(moves, move{
+				Piece:      this,
+				From:       from,
+				To:         targetSquare,
+				Captured:   targetPiece,
+				CapturedOn: targetSquare,
+			})
 		}
 	}
 	return moves

@@ -20,10 +20,6 @@ const (
 	BlackKing   piece = "k"
 )
 
-func (this piece) String() string {
-	return string(this)
-}
-
 func (this piece) GetThreatsFrom(from square) []square {
 	switch {
 	case this.IsKing():
