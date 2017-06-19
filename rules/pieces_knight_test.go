@@ -29,6 +29,9 @@ const (
 
 	knightCapturesOpposingUnits  = "7k/8/2p1p3/1p3p1p/3N3P/1p3p2/2p1p3/7K w - - 0 1"
 	knightBlockedByFriendlyUnits = "7k/8/2P1P3/1P3P1p/3N3P/1P3P2/2P1P3/7K w - - 0 1"
+
+	// TODO: knightCanCheckEnemyKing
+	// TODO: knightCanCheckmateEnemyKing
 )
 
 func (this *KnightMovesFixture) Test() {

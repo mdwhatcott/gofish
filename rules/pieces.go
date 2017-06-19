@@ -44,6 +44,8 @@ func (this piece) CalculateMovesFrom(square square, board board) (moves []move) 
 		return this.calculateRangedPieceMovesFrom(square, board, bishopMoveOffsetLines)
 	case this.IsRook():
 		return this.calculateRangedPieceMovesFrom(square, board, rookMoveOffsetLines)
+	case this.IsQueen():
+		return this.calculateRangedPieceMovesFrom(square, board, queenMoveOffsetLines)
 	}
 	return nil
 }
@@ -52,6 +54,7 @@ func (this piece) IsKing() bool   { return this == WhiteKing || this == BlackKin
 func (this piece) IsKnight() bool { return this == WhiteKnight || this == BlackKnight }
 func (this piece) IsBishop() bool { return this == WhiteBishop || this == BlackBishop }
 func (this piece) IsRook() bool   { return this == WhiteRook || this == BlackRook }
+func (this piece) IsQueen() bool  { return this == WhiteQueen || this == BlackQueen }
 
 func (this piece) Player() player {
 	if this == Void {

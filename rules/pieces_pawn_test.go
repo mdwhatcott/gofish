@@ -35,6 +35,10 @@ const (
 	doublePawnCaptures          = "k7/8/8/n1n3p1/1P3N1N/8/8/K7 "
 	whiteDoublePawnCapture      = doublePawnCaptures + "w - - 0 1"
 	blackDoublePawnCapture      = doublePawnCaptures + "b - - 0 1"
+
+	// TODO: pawnCanCheckEnemyKing (with advancement, capture, or promotion = Q or R or B or N)
+	// TODO: pawnCanCheckmateEnemyKing (with advancement, capture, or promotion = Q or R or B or N)
+
 )
 
 func (this *PawnMovesFixture) Test() {
