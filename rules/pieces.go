@@ -40,13 +40,18 @@ func (this piece) CalculateMovesFrom(square square, board board) (moves []move) 
 		return this.calculateKnightMovesFrom(square, board)
 	case this.IsPawn():
 		return this.calculatePawnMovesFrom(square, board)
-	default:
-		return nil
+	case this.IsBishop():
+		return this.calculateRangedPieceMovesFrom(square, board, bishopMoveOffsetLines)
+	case this.IsRook():
+		return this.calculateRangedPieceMovesFrom(square, board, rookMoveOffsetLines)
 	}
+	return nil
 }
 func (this piece) IsPawn() bool   { return this == WhitePawn || this == BlackPawn }
 func (this piece) IsKing() bool   { return this == WhiteKing || this == BlackKing }
 func (this piece) IsKnight() bool { return this == WhiteKnight || this == BlackKnight }
+func (this piece) IsBishop() bool { return this == WhiteBishop || this == BlackBishop }
+func (this piece) IsRook() bool   { return this == WhiteRook || this == BlackRook }
 
 func (this piece) Player() player {
 	if this == Void {

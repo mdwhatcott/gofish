@@ -9,27 +9,20 @@ import (
 	"github.com/smartystreets/gunit"
 )
 
-func TestLegalPieceMovesFixture(t *testing.T) {
-	gunit.Run(new(LegalPieceMovesFixture), t)
+func TestLegalFirstMovesFixture(t *testing.T) {
+	gunit.Run(new(LegalFirstMovesFixture), t)
 }
 
-type LegalPieceMovesFixture struct {
+type LegalFirstMovesFixture struct {
 	*gunit.Fixture
-
-	game *Game
+	*LegalMovesFixture
 }
 
-func (this *LegalPieceMovesFixture) Setup() {
-	this.game = NewGame()
+func (this *LegalFirstMovesFixture) Setup() {
+	this.LegalMovesFixture = NewLegalGameMovesFixture(this.Fixture)
 }
 
-func NewLegalGameMovesFixture(fixture *gunit.Fixture) *LegalPieceMovesFixture {
-	this := &LegalPieceMovesFixture{Fixture: fixture}
-	this.Setup()
-	return this
-}
-
-func (this *LegalPieceMovesFixture) TestLegalFirstMovesForWhite() {
+func (this *LegalFirstMovesFixture) TestLegalFirstMovesForWhite() {
 	this.assertAllLegalMoves(this.game.GetLegalMoves(this.game.PlayerToMove()),
 		"a3", "a4",
 		"b3", "b4",
@@ -44,7 +37,7 @@ func (this *LegalPieceMovesFixture) TestLegalFirstMovesForWhite() {
 	)
 }
 
-func (this *LegalPieceMovesFixture) TestLegalFirstMovesForBlack() {
+func (this *LegalFirstMovesFixture) TestLegalFirstMovesForBlack() {
 	this.game.Execute(move{From: Square("a2"), To: Square("a3"), Piece: WhitePawn})
 	this.assertAllLegalMoves(this.game.GetLegalMoves(this.game.PlayerToMove()),
 		"a6", "a5",
@@ -60,7 +53,25 @@ func (this *LegalPieceMovesFixture) TestLegalFirstMovesForBlack() {
 	)
 }
 
-func (this *LegalPieceMovesFixture) assertAllLegalMoves(actualMoves []move, expectedMovesSAN ...string) {
+/**************************************************************************/
+
+type LegalMovesFixture struct {
+	*gunit.Fixture
+
+	game *Game
+}
+
+func (this *LegalMovesFixture) Setup() {
+	this.game = NewGame()
+}
+
+func NewLegalGameMovesFixture(fixture *gunit.Fixture) *LegalMovesFixture {
+	this := &LegalMovesFixture{Fixture: fixture}
+	this.Setup()
+	return this
+}
+
+func (this *LegalMovesFixture) assertAllLegalMoves(actualMoves []move, expectedMovesSAN ...string) {
 	this.So(actualMoves, should.HaveLength, len(expectedMovesSAN))
 	actualMovesSan := []string{}
 	for _, move := range actualMoves {
@@ -77,7 +88,7 @@ func (this *LegalPieceMovesFixture) assertAllLegalMoves(actualMoves []move, expe
 	}
 }
 
-func (this *LegalPieceMovesFixture) assertLegalPieceMoves(
+func (this *LegalMovesFixture) assertLegalPieceMoves(
 	position string, from string, piece piece, expectedPieceMovesSAN ...string) {
 
 	if len(expectedPieceMovesSAN) == 0 {
@@ -104,6 +115,7 @@ func (this *LegalPieceMovesFixture) assertLegalPieceMoves(
 		picture := console.NewBoard()
 		picture.Setup(position)
 		this.Println(console.NewCoordinateBoard(picture.String()))
+		this.Println("Moves:", moves)
 	}
 }
 

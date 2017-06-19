@@ -13,11 +13,11 @@ func TestKnightMovesFixture(t *testing.T) {
 
 type KnightMovesFixture struct {
 	*gunit.Fixture
-	*LegalPieceMovesFixture
+	*LegalMovesFixture
 }
 
 func (this *KnightMovesFixture) Setup() {
-	this.LegalPieceMovesFixture = NewLegalGameMovesFixture(this.Fixture)
+	this.LegalMovesFixture = NewLegalGameMovesFixture(this.Fixture)
 }
 
 const (

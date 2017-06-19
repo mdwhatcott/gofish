@@ -12,11 +12,11 @@ func TestPawnMovesFixture(t *testing.T) {
 
 type PawnMovesFixture struct {
 	*gunit.Fixture
-	*LegalPieceMovesFixture
+	*LegalMovesFixture
 }
 
 func (this *PawnMovesFixture) Setup() {
-	this.LegalPieceMovesFixture = NewLegalGameMovesFixture(this.Fixture)
+	this.LegalMovesFixture = NewLegalGameMovesFixture(this.Fixture)
 }
 
 const (

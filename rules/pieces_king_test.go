@@ -13,11 +13,11 @@ func TestKingMovesFixture(t *testing.T) {
 
 type KingMovesFixture struct {
 	*gunit.Fixture
-	*LegalPieceMovesFixture
+	*LegalMovesFixture
 }
 
 func (this *KingMovesFixture) Setup() {
-	this.LegalPieceMovesFixture = NewLegalGameMovesFixture(this.Fixture)
+	this.LegalMovesFixture = NewLegalGameMovesFixture(this.Fixture)
 }
 
 const (
@@ -34,8 +34,10 @@ const (
 	whiteKingSurroundedByFriendlyUnits         = "k7/8/8/8/1BQR4/1NKN4/1PPP4/8 w - - 0 1"
 	whiteKingSurroundedByUnprotectedEnemyUnits = "k7/8/8/8/8/8/nn6/Kn6 w - - 0 1"
 	kingCannotApproachOtherKing                = "kq6/8/K7/8/8/8/8/8 w - - 0 1"
-	whiteKingSurroundedByThreatenedSquares     = "2r1r3/8/8/r7/3K4/r7/8/8 w - - 0 1"     // TODO
-	whiteKingSurroundedByProtectedEnemyUnits   = "8/8/8/2qqq3/2qKq3/2qqq3/8/8 w - - 0 1" // TODO
+	whiteWithCastlingOpportunities             = "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1" // TODO
+	blackWithCastlingOpportunities             = "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R b KQkq - 0 1" // TODO
+	whiteKingSurroundedByThreatenedSquares     = "2r1r3/8/8/r7/3K4/r7/8/8 w - - 0 1"                  // TODO
+	whiteKingSurroundedByProtectedEnemyUnits   = "8/8/8/2qqq3/2qKq3/2qqq3/8/8 w - - 0 1"              // TODO
 )
 
 func (this *KingMovesFixture) TestAwayFromAnyEdge() {

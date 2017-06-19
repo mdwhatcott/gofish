@@ -16,7 +16,7 @@ type move struct {
 	Captured   piece
 	CapturedOn square
 
-	Castles bool // When true, the Piece will represent the Rook involved.
+	Castles bool // When true, the Piece will be the king. Which side is inferred by the direction moved by the king.
 
 	Check     bool
 	Checkmate bool

@@ -13,11 +13,11 @@ func TestGameFixture(t *testing.T) {
 
 type GameFixture struct {
 	*gunit.Fixture
-	*LegalPieceMovesFixture
+	*LegalMovesFixture
 }
 
 func (this *GameFixture) Setup() {
-	this.LegalPieceMovesFixture = NewLegalGameMovesFixture(this.Fixture)
+	this.LegalMovesFixture = NewLegalGameMovesFixture(this.Fixture)
 }
 
 func (this *GameFixture) TestStartingGameConditions() {
