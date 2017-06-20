@@ -190,27 +190,27 @@ func (this *MoveRepresentationFixture) TestAmbiguousPieceMoves() {
 
 func (this *MoveRepresentationFixture) TestCastling() {
 	this.assertMove("O-O", move{
-		Piece:   WhiteRook,
-		From:    Square("h1"),
-		To:      Square("e1"),
+		Piece:   WhiteKing,
+		From:    Square("e1"),
+		To:      Square("g1"),
 		Castles: true,
 	})
 	this.assertMove("O-O-O", move{
-		Piece:   WhiteRook,
-		From:    Square("a1"),
-		To:      Square("d1"),
+		Piece:   WhiteKing,
+		From:    Square("e1"),
+		To:      Square("c1"),
 		Castles: true,
 	})
 	this.assertMove("O-O", move{
-		Piece:   BlackRook,
-		From:    Square("h8"),
-		To:      Square("e8"),
+		Piece:   BlackKing,
+		From:    Square("e8"),
+		To:      Square("g8"),
 		Castles: true,
 	})
 	this.assertMove("O-O-O", move{
-		Piece:   BlackRook,
-		From:    Square("a8"),
-		To:      Square("d8"),
+		Piece:   BlackKing,
+		From:    Square("e8"),
+		To:      Square("c8"),
 		Castles: true,
 	})
 }

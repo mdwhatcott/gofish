@@ -42,7 +42,7 @@ func (this move) SAN() string {
 }
 func (this move) determineCastleSide(buffer *bytes.Buffer) {
 	buffer.WriteString("O-O")
-	if this.From.File() == "a" {
+	if this.To.File() == "c" {
 		buffer.WriteString("-O")
 	}
 }
