@@ -99,9 +99,9 @@ func (this *Game) GetPieceAt(square square) piece {
 	return this.squares[square]
 }
 
-func (this *Game) IsUnderThreat(subject square, player player) bool {
+func (this *Game) IsUnderThreat(subject square, aggressor player) bool {
 	for square, piece := range this.squares {
-		if piece.Player() == player {
+		if piece.Player() == aggressor {
 			for _, covered := range piece.GetThreatsFrom(square) {
 				if covered == subject {
 					return true
