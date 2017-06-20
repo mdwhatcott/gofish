@@ -31,7 +31,6 @@ func (this piece) GetThreatsFrom(from square) []square {
 
 func (this piece) CalculateMovesFrom(square square, board board) (moves []move) {
 	// TODO: if the player's king is currently in check and a move can't do anything to prevent check, that move is invalid
-	// TODO: if the player's king is currently in check and a move can remove check by blocking or capturing the aggressor, that move is valid
 	// TODO: if executing a move would cause discovered check, that move is invalid
 	switch {
 	case this.IsKing():
