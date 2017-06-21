@@ -16,9 +16,14 @@ type Game struct {
 }
 
 func NewGame() *Game {
-	game := &Game{squares: make(map[square]piece, 64)}
+	game := new(Game)
+	game.initialize(make(map[square]piece, 64))
 	game.Reset()
 	return game
+}
+
+func (this *Game) initialize(state map[square]piece) {
+	this.squares = state
 }
 
 func (this *Game) Reset() {
@@ -83,7 +88,18 @@ func (this *Game) CanCastleQueenside(player player) bool {
 	}
 }
 
-/* board interface: *******************************************************/
+func (this *Game) IsInCheck(player player) bool {
+	kingSquare := this.findKing(player)
+	return this.SquareIsCoveredBy(kingSquare, player.Other())
+}
+func (this *Game) findKing(player player) square {
+	for square, piece := range this.squares {
+		if piece.IsKing() && piece.Player() == player {
+			return square
+		}
+	}
+	return IntSquare(-1)
+}
 
 func (this *Game) Execute(move move) {
 	this.squares[move.To], this.squares[move.From] = this.squares[move.From], Void
@@ -91,7 +107,7 @@ func (this *Game) Execute(move move) {
 }
 
 func (this *Game) TakeBack(move move) {
-	this.squares[move.From], this.squares[move.To] = this.squares[move.To], Void
+	this.squares[move.From], this.squares[move.To] = this.squares[move.To], move.Captured
 	this.player = this.player.Other()
 }
 
@@ -99,10 +115,10 @@ func (this *Game) GetPieceAt(square square) piece {
 	return this.squares[square]
 }
 
-func (this *Game) IsUnderThreat(subject square, aggressor player) bool {
+func (this *Game) SquareIsCoveredBy(subject square, aggressor player) bool {
 	for square, piece := range this.squares {
 		if piece.Player() == aggressor {
-			for _, covered := range piece.GetThreatsFrom(square) {
+			for _, covered := range piece.GetCoverageForPieceOn(square, this) {
 				if covered == subject {
 					return true
 				}
@@ -112,11 +128,32 @@ func (this *Game) IsUnderThreat(subject square, aggressor player) bool {
 	return false
 }
 
+func (this *Game) copyGame() *Game {
+	game := new(Game)
+	game.initialize(this.copySquares())
+	// TODO: other game state???
+	return game
+}
+
+func (this *Game) copySquares() map[square]piece {
+	other := make(map[square]piece, 64)
+	for square, piece := range this.squares {
+		other[square] = piece
+	}
+	return other
+}
+
 func (this *Game) GetLegalMoves(player player) (moves []move) {
+	imagination := this.copyGame()
+
 	for square, piece := range this.squares {
 		if piece.Player() == player {
 			for _, move := range piece.CalculateMovesFrom(square, this) {
-				moves = append(moves, move)
+				imagination.Execute(move)
+				if !imagination.IsInCheck(player) {
+					moves = append(moves, move) // TODO: if this move puts the other player in check, mark the move as such
+				}
+				imagination.TakeBack(move)
 			}
 		}
 	}

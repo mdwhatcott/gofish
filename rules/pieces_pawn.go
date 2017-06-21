@@ -1,5 +1,16 @@
 package rules
 
+func (this piece) getPawnCoverageFrom(from square, board board) (covered []square) {
+	var captures = whitePawnCaptureOffsets
+	if this.Player() == Black {
+		captures = blackPawnCaptureOffsets
+	}
+	for _, offset := range captures {
+		covered = append(covered, from.Offset(offset))
+	}
+	return covered
+}
+
 func (this piece) calculatePawnMovesFrom(from square, board board) (moves []move) {
 	var advancement []square
 	var captures []square

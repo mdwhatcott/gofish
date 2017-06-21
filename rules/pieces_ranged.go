@@ -20,3 +20,19 @@ func (this piece) calculateRangedPieceMovesFrom(from square, board board, offset
 	}
 	return moves
 }
+
+func (this piece) getRangedPieceCoverageFrom(from square, board board, offsetLines [][]square) (covered []square) {
+	for _, line := range offsetLines {
+		for _, offset := range line {
+			target := from.Offset(offset)
+			if !target.IsValidSquare() {
+				break
+			}
+			covered = append(covered, target)
+			if board.GetPieceAt(target) != Void {
+				break
+			}
+		}
+	}
+	return covered
+}

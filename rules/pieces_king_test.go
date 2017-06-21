@@ -36,8 +36,8 @@ const (
 	kingCannotApproachOtherKing                = "kq6/8/K7/8/8/8/8/8 w - - 0 1"
 	whiteWithCastlingOpportunities             = "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1" // TODO
 	blackWithCastlingOpportunities             = "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R b KQkq - 0 1" // TODO
-	whiteKingSurroundedByThreatenedSquares     = "2r1r3/8/8/r7/3K4/r7/8/8 w - - 0 1"                  // TODO
-	whiteKingSurroundedByProtectedEnemyUnits   = "8/8/8/2qqq3/2qKq3/2qqq3/8/8 w - - 0 1"              // TODO
+	whiteKingSurroundedByThreatenedSquares     = "2r1r3/8/8/r7/3K4/r7/8/8 w - - 0 1"
+	whiteKingSurroundedByProtectedEnemyUnits   = "8/8/8/2qqq3/2qKq3/2qqq3/8/8 w - - 0 1"
 )
 
 func (this *KingMovesFixture) TestAwayFromAnyEdge() {
@@ -97,8 +97,10 @@ func (this *KingMovesFixture) TestSurroundedByUnprotectedEnemyUnits() {
 		"Kxa2", "Kxb2",
 		/*****/ "Kxb1")
 }
-func (this *KingMovesFixture) TestKingsRepelEachOther() {
+func (this *KingMovesFixture) TestKingCannotEnterCheck() {
 	this.assertLegalPieceMoves(kingCannotApproachOtherKing, "a8", BlackKing)
+	this.assertLegalPieceMoves(whiteKingSurroundedByThreatenedSquares, "d4", WhiteKing)
+	this.assertLegalPieceMoves(whiteKingSurroundedByProtectedEnemyUnits, "d4", WhiteKing)
 }
 
 func (this *KingMovesFixture) TestCaptureMovesAreMarkedAsSuch() {
@@ -109,6 +111,3 @@ func (this *KingMovesFixture) TestCaptureMovesAreMarkedAsSuch() {
 		this.So(move.CapturedOn.String(), should.Equal, move.To.String())
 	}
 }
-
-// TODO: can't move into check
-// TODO: can't capture into check

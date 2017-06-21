@@ -1,4 +1,12 @@
 package rules
+func (this piece) getKnightCoverageFrom(from square) (covered []square) {
+	for _, offset := range knightMoveOffsets {
+		target := from.Offset(offset)
+		covered = append(covered, target)
+	}
+	return covered
+}
+
 
 func (this piece) calculateKnightMovesFrom(square square, board board) (moves []move) {
 	for _, offset := range knightMoveOffsets {

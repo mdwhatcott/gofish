@@ -20,10 +20,20 @@ const (
 	BlackKing   piece = "k"
 )
 
-func (this piece) GetThreatsFrom(from square) []square {
+func (this piece) GetCoverageForPieceOn(from square, board board) []square {
 	switch {
 	case this.IsKing():
-		return this.getKingThreatsFrom(from)
+		return this.getKingCoverageFrom(from)
+	case this.IsPawn():
+		return this.getPawnCoverageFrom(from, board)
+	case this.IsKnight():
+		return this.getKnightCoverageFrom(from)
+	case this.IsRook():
+		return this.getRangedPieceCoverageFrom(from, board, rookMoveOffsetLines)
+	case this.IsBishop():
+		return this.getRangedPieceCoverageFrom(from, board, bishopMoveOffsetLines)
+	case this.IsQueen():
+		return this.getRangedPieceCoverageFrom(from, board, queenMoveOffsetLines)
 	default:
 		return nil
 	}

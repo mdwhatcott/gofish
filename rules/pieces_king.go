@@ -1,6 +1,6 @@
 package rules
 
-func (this piece) getKingThreatsFrom(from square) (targets []square) {
+func (this piece) getKingCoverageFrom(from square) (targets []square) {
 	for _, offset := range kingMoveOffsets {
 		if target := from.Offset(offset); target.IsValidSquare() {
 			targets = append(targets, target)
@@ -17,9 +17,6 @@ func (this piece) calculateKingMovesFrom(from square, board board) (moves []move
 		}
 		targetPiece := board.GetPieceAt(target)
 		if targetPiece.Player() == this.Player() {
-			continue
-		}
-		if board.IsUnderThreat(target, this.Player().Other()) {
 			continue
 		}
 		moves = append(moves, move{
