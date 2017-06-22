@@ -44,8 +44,23 @@ func (this *MoveRepresentationFixture) TestPawnCaptures() {
 		Captured: BlackPawn, CapturedOn: Square("b3"),
 		Checkmate: true,
 	})
+
+	this.assertMove("axb3", move{
+		Piece: BlackPawn, From: Square("a4"), To: Square("b3"),
+		Captured: WhitePawn, CapturedOn: Square("b3"),
+	})
+	this.assertMove("axb3+", move{
+		Piece: BlackPawn, From: Square("a4"), To: Square("b3"),
+		Captured: WhitePawn, CapturedOn: Square("b3"),
+		Check: true,
+	})
+	this.assertMove("axb3#", move{
+		Piece: BlackPawn, From: Square("a4"), To: Square("b3"),
+		Captured: WhitePawn, CapturedOn: Square("b3"),
+		Checkmate: true,
+	})
 }
-func (this *MoveRepresentationFixture) TestPawnPromotions() {
+func (this *MoveRepresentationFixture) TestWhitePawnPromotions() {
 	this.assertMove("a8=Q", move{
 		Piece: WhitePawn, From: Square("a7"), To: Square("a8"),
 		Promotion: WhiteQueen,
@@ -70,6 +85,34 @@ func (this *MoveRepresentationFixture) TestPawnPromotions() {
 	this.assertMove("a8=N#", move{
 		Piece: WhitePawn, From: Square("a7"), To: Square("a8"),
 		Promotion: WhiteKnight,
+		Checkmate: true,
+	})
+}
+func (this *MoveRepresentationFixture) TestBlackPawnPromotions() {
+	this.assertMove("a1=Q", move{
+		Piece: BlackPawn, From: Square("a2"), To: Square("a1"),
+		Promotion: BlackQueen,
+	})
+	this.assertMove("a1=R", move{
+		Piece: BlackPawn, From: Square("a2"), To: Square("a1"),
+		Promotion: BlackRook,
+	})
+	this.assertMove("a1=B", move{
+		Piece: BlackPawn, From: Square("a2"), To: Square("a1"),
+		Promotion: BlackBishop,
+	})
+	this.assertMove("a1=N", move{
+		Piece: BlackPawn, From: Square("a2"), To: Square("a1"),
+		Promotion: BlackKnight,
+	})
+	this.assertMove("a1=Q+", move{
+		Piece: BlackPawn, From: Square("a2"), To: Square("a1"),
+		Promotion: BlackQueen,
+		Check:     true,
+	})
+	this.assertMove("a1=N#", move{
+		Piece: BlackPawn, From: Square("a2"), To: Square("a1"),
+		Promotion: BlackKnight,
 		Checkmate: true,
 	})
 }

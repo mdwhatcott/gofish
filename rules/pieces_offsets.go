@@ -64,4 +64,7 @@ var (
 		{file: -1, rank: -1},
 		{file: 1, rank: -1},
 	}
+
+	whitePawnPromotions = []piece{WhiteQueen, WhiteRook, WhiteBishop, WhiteKnight}
+	blackPawnPromotions = []piece{BlackQueen, BlackRook, BlackBishop, BlackKnight}
 )

@@ -56,7 +56,7 @@ func (this move) pawnMove(buffer *bytes.Buffer) {
 
 	if this.Promotion != Void {
 		buffer.WriteString(promotes)
-		buffer.WriteString(string(this.Promotion))
+		buffer.WriteString(strings.ToUpper(string(this.Promotion)))
 	}
 }
 func (this move) pieceMove(buffer *bytes.Buffer) {

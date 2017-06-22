@@ -14,8 +14,10 @@ func (this piece) getPawnCoverageFrom(from square, board board) (covered []squar
 func (this piece) calculatePawnMovesFrom(from square, board board) (moves []move) {
 	var advancement []square
 	var captures []square
+	var promotions []piece
 	if this.Player() == White {
 		captures = whitePawnCaptureOffsets
+		promotions = whitePawnPromotions
 		if from.Rank() == "2" {
 			advancement = whitePawnInitialAdvancementOffsets
 		} else {
@@ -23,6 +25,7 @@ func (this piece) calculatePawnMovesFrom(from square, board board) (moves []move
 		}
 	} else {
 		captures = blackPawnCaptureOffsets
+		promotions = blackPawnPromotions
 		if from.Rank() == "7" {
 			advancement = blackPawnInitialAdvancementOffsets
 		} else {
@@ -33,7 +36,13 @@ func (this piece) calculatePawnMovesFrom(from square, board board) (moves []move
 	for _, offset := range advancement {
 		target := from.Offset(offset)
 		if board.GetPieceAt(target) == Void {
-			moves = append(moves, move{Piece: this, From: from, To: target})
+			if rank := target.Rank(); rank == "8" || rank == "1" {
+				for _, promotion := range promotions {
+					moves = append(moves, move{Piece: this, From: from, To: target, Promotion: promotion})
+				}
+			} else {
+				moves = append(moves, move{Piece: this, From: from, To: target})
+			}
 		}
 	}
 
@@ -41,13 +50,26 @@ func (this piece) calculatePawnMovesFrom(from square, board board) (moves []move
 		targetSquare := from.Offset(offset)
 		targetPiece := board.GetPieceAt(targetSquare)
 		if targetPiece.Player() == this.Player().Other() {
-			moves = append(moves, move{
-				Piece:      this,
-				From:       from,
-				To:         targetSquare,
-				Captured:   targetPiece,
-				CapturedOn: targetSquare,
-			})
+			if rank := targetSquare.Rank(); rank == "8" || rank == "1" {
+				for _, promotion := range promotions {
+					moves = append(moves, move{
+						Piece:      this,
+						From:       from,
+						To:         targetSquare,
+						Captured:   targetPiece,
+						CapturedOn: targetSquare,
+						Promotion:  promotion,
+					})
+				}
+			} else {
+				moves = append(moves, move{
+					Piece:      this,
+					From:       from,
+					To:         targetSquare,
+					Captured:   targetPiece,
+					CapturedOn: targetSquare,
+				})
+			}
 		}
 	}
 	return moves

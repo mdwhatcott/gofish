@@ -61,7 +61,7 @@ func (this *Game) PlayerToMove() player {
 }
 
 func (this *Game) IsOver() bool {
-	return false
+	return this.IsInCheckmate(White) || this.IsInCheckmate(Black)
 }
 
 func (this *Game) FullMoveCount() int {
@@ -88,6 +88,9 @@ func (this *Game) CanCastleQueenside(player player) bool {
 	}
 }
 
+func (this *Game) IsInCheckmate(player player) bool {
+	return this.IsInCheck(player) && len(this.GetLegalMoves(player)) == 0
+}
 func (this *Game) IsInCheck(player player) bool {
 	kingSquare := this.findKing(player)
 	return this.SquareIsCoveredBy(kingSquare, player.Other())
@@ -103,11 +106,18 @@ func (this *Game) findKing(player player) square {
 
 func (this *Game) Execute(move move) {
 	this.squares[move.To], this.squares[move.From] = this.squares[move.From], Void
+	if move.Promotion != Void {
+		this.squares[move.To] = move.Promotion
+	}
 	this.player = this.player.Other()
 }
 
 func (this *Game) TakeBack(move move) {
+	// TODO: this code will not yet undo en-passant correctly.
 	this.squares[move.From], this.squares[move.To] = this.squares[move.To], move.Captured
+	if move.Promotion != Void {
+		this.squares[move.From] = move.Piece
+	}
 	this.player = this.player.Other()
 }
 
@@ -151,6 +161,9 @@ func (this *Game) GetLegalMoves(player player) (moves []move) {
 			for _, move := range piece.CalculateMovesFrom(square, this) {
 				imagination.Execute(move)
 				if !imagination.IsInCheck(player) {
+					if imagination.IsInCheck(player.Other()) {
+						move.Check = true
+					}
 					moves = append(moves, move) // TODO: if this move puts the other player in check, mark the move as such
 				}
 				imagination.TakeBack(move)

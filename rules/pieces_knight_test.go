@@ -27,10 +27,10 @@ const (
 	knight3TargetSquares = "7k/8/8/7p/7P/8/8/1N5K w - - 0 1"
 	knight2TargetSquares = "7k/8/8/7p/7P/8/8/N6K w - - 0 1"
 
-	knightCapturesOpposingUnits  = "7k/8/2p1p3/1p3p1p/3N3P/1p3p2/2p1p3/7K w - - 0 1"
-	knightBlockedByFriendlyUnits = "7k/8/2P1P3/1P3P1p/3N3P/1P3P2/2P1P3/7K w - - 0 1"
+	knightCapturesOpposingUnits       = "7k/8/2p1p3/1p3p1p/3N3P/1p3p2/2p1p3/7K w - - 0 1"
+	knightBlockedByFriendlyUnits      = "7k/8/2P1P3/1P3P1p/3N3P/1P3P2/2P1P3/7K w - - 0 1"
+	knightCanCheckEnemyKingFromCorner = "7N/8/8/4k3/8/8/8/1K6 w - - 0 1"
 
-	// TODO: knightCanCheckEnemyKing
 	// TODO: knightCanCheckmateEnemyKing
 )
 
@@ -43,6 +43,7 @@ func (this *KnightMovesFixture) Test() {
 	this.assertLegalPieceMoves(knightBlockedByFriendlyUnits, "d4", WhiteKnight)
 	this.assertLegalPieceMoves(knightCapturesOpposingUnits, "d4", WhiteKnight,
 		"Nxb3", "Nxb5", "Nxc2", "Nxc6", "Nxe2", "Nxe6", "Nxf3", "Nxf5")
+	this.assertLegalPieceMoves(knightCanCheckEnemyKingFromCorner, "h8", WhiteKnight, "Ng6+", "Nf7+")
 }
 
 func (this *KnightMovesFixture) TestCaptureMovesAreMarkedAsSuch() {

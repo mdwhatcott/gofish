@@ -27,12 +27,15 @@ const (
 	bishopWithLimitedRange       = "k7/8/p7/8/3B4/8/5P2/7K w - - 0 1"
 	queenWithGoodRange           = "kr6/Pp6/8/8/3Q3p/8/8/8 w - - 0 1"
 
-	// TODO: rookCanCheckEnemyKing
+	rookCanCheckEnemyKing   = "3k4/6PR/6PP/8/8/8/8/1K6 w - - 0 1"
+	queenCanCheckEnemyKing  = "3k4/6PQ/6PP/8/8/8/8/1K6 w - - 0 1"
+	bishopCanCheckEnemyKing = "5N1k/6p1/6PB/6PP/8/8/8/1K6 w - - 0 1"
+
 	// TODO: rookCanCheckmateEnemyKing
-	// TODO: bishopCanCheckEnemyKing
 	// TODO: bishopCanCheckmateEnemyKing
-	// TODO: queenCanCheckEnemyKing
 	// TODO: queenCanCheckmateEnemyKing
+
+	// TODO: discovered check
 )
 
 func (this *RangedPieceMoveFixture) TestRook() {
@@ -47,6 +50,8 @@ func (this *RangedPieceMoveFixture) TestRook() {
 	this.assertLegalPieceMoves(rookWithLimitedMovement, "a1", WhiteRook,
 		"Ra2", "Ra3", "Ra4",
 		"Rb1", "Rc1")
+
+	this.assertLegalPieceMoves(rookCanCheckEnemyKing, "h7", WhiteRook, "Rh8+")
 }
 
 func (this *RangedPieceMoveFixture) TestBishop() {
@@ -56,6 +61,7 @@ func (this *RangedPieceMoveFixture) TestBishop() {
 	this.assertLegalPieceMoves(bishopWithLimitedRange, "d4", WhiteBishop,
 		"Ba1", "Bb2", "Bc3", "Be5", "Bf6", "Bg7", "Bh8",
 		"Ba7", "Bb6", "Bc5", "Be3")
+	this.assertLegalPieceMoves(bishopCanCheckEnemyKing, "h6", WhiteBishop, "Bxg7+")
 }
 
 func (this *RangedPieceMoveFixture) TestQueen() {
@@ -64,4 +70,5 @@ func (this *RangedPieceMoveFixture) TestQueen() {
 		"Qb6", "Qc5", "Qe3", "Qf2", "Qg1",
 		"Qa4", "Qb4", "Qc4", "Qe4", "Qf4", "Qg4", "Qxh4",
 		"Qd1", "Qd2", "Qd3", "Qd5", "Qd6", "Qd7", "Qd8")
+	this.assertLegalPieceMoves(queenCanCheckEnemyKing, "h7", WhiteQueen, "Qg8+", "Qh8+")
 }
