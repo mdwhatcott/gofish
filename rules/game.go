@@ -5,14 +5,6 @@ import "log"
 type Game struct {
 	squares map[square]piece
 	player  player
-
-	fullMoveCount int
-	halfMoveCount int
-
-	whiteCanCastleKingside  bool
-	blackCanCastleKingside  bool
-	whiteCanCastleQueenside bool
-	blackCanCastleQueenside bool
 }
 
 func NewGame() *Game {
@@ -43,13 +35,7 @@ func (this *Game) LoadFEN(raw string) error {
 	for s, piece := range fen.squares {
 		this.squares[IntSquare(s)] = piece
 	}
-	this.player = fen.toMove
-	this.blackCanCastleQueenside = fen.blackCanCastleQueenside
-	this.blackCanCastleKingside = fen.blackCanCastleKingside
-	this.whiteCanCastleQueenside = fen.whiteCanCastleQueenside
-	this.whiteCanCastleKingside = fen.whiteCanCastleKingside
-	this.fullMoveCount = fen.fullMoveCount
-	this.halfMoveCount = fen.halfMoveCount
+	this.player = White
 	return nil
 }
 func (this *Game) ExportFEN() string {
@@ -62,30 +48,6 @@ func (this *Game) PlayerToMove() player {
 
 func (this *Game) IsOver() bool {
 	return this.IsInCheckmate(White) || this.IsInCheckmate(Black)
-}
-
-func (this *Game) FullMoveCount() int {
-	return this.fullMoveCount
-}
-
-func (this *Game) HalfMoveCount() int {
-	return this.halfMoveCount
-}
-
-func (this *Game) CanCastleKingside(player player) bool {
-	if player == White {
-		return this.whiteCanCastleKingside
-	} else {
-		return this.blackCanCastleKingside
-	}
-}
-
-func (this *Game) CanCastleQueenside(player player) bool {
-	if player == White {
-		return this.whiteCanCastleQueenside
-	} else {
-		return this.blackCanCastleQueenside
-	}
 }
 
 func (this *Game) IsInCheckmate(player player) bool {

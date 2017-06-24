@@ -7,7 +7,7 @@ import (
 	"unicode"
 )
 
-const startingPositionFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+const startingPositionFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
 
 // Forsyth–Edwards Notation
 // https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
@@ -33,17 +33,11 @@ func ParseFEN(raw string) (this *FEN, err error) {
 	this = &FEN{}
 	fields := strings.Split(raw, " ")
 	this.parseSquares(fields[0])
-	this.parsePlayerToMove(fields[1])
-	this.parseCastlingOpportunities(fields[2])
+	this.parsePlayerToMove(fields)
+	this.parseCastlingOpportunities(fields)
 	// TODO: this.parseEnPassantTargetSquare(fields[3])
-	err = this.parseHalfMoveCount(fields[4])
-	if err != nil {
-		return nil, err
-	}
-	err = this.parseFullMoveCount(fields[5])
-	if err != nil {
-		return nil, err
-	}
+	// TODO: this.parseHalfMoveCount
+	// TODO: this.parseFullMoveCount
 	return this, nil
 }
 func (this *FEN) parseSquares(fenBoard string) {
@@ -62,14 +56,22 @@ func (this *FEN) parseSquares(fenBoard string) {
 	}
 }
 
-func (this *FEN) parsePlayerToMove(player string) {
+func (this *FEN) parsePlayerToMove(fields []string) {
+	if len(fields) <= 1 {
+		return
+	}
+	player := fields[1]
 	if player == "w" {
 		this.toMove = White
 	} else {
 		this.toMove = Black
 	}
 }
-func (this *FEN) parseCastlingOpportunities(castle string) {
+func (this *FEN) parseCastlingOpportunities(fields []string) {
+	if len(fields) <= 2 {
+		return
+	}
+	castle := fields[2]
 	for _, c := range castle {
 		switch c {
 		case 'K':
@@ -98,16 +100,10 @@ func (this *FEN) parseFullMoveCount(count string) (err error) {
 
 func PrepareFEN(squares map[square]piece, game *Game) *FEN {
 	return &FEN{
-		buffer:                  new(bytes.Buffer),
-		squares:                 copyMapToArray(squares),
-		toMove:                  game.PlayerToMove(),
-		whiteCanCastleKingside:  game.CanCastleKingside(White),
-		whiteCanCastleQueenside: game.CanCastleQueenside(White),
-		blackCanCastleKingside:  game.CanCastleKingside(Black),
-		blackCanCastleQueenside: game.CanCastleQueenside(Black),
-		enPassantTargetSquare:   0, // TODO
-		fullMoveCount:           game.FullMoveCount(),
-		halfMoveCount:           game.HalfMoveCount(),
+		buffer:                new(bytes.Buffer),
+		squares:               copyMapToArray(squares),
+		toMove:                game.PlayerToMove(),
+		enPassantTargetSquare: 0, // TODO
 	}
 }
 
@@ -121,7 +117,6 @@ func copyMapToArray(squares map[square]piece) []piece {
 
 func (this *FEN) String() string {
 	this.recordPiecePlacement()
-	this.space()
 	this.recordGameMetadata()
 	return this.buffer.String()
 }
@@ -179,12 +174,13 @@ func (this *FEN) recordCastlingOpportunities() {
 	}
 }
 func (this *FEN) recordGameMetadata() {
+	this.space()
 	this.recordActiveColor()
 	this.space()
 	this.recordCastlingOpportunities()
 	this.space()
 	this.buffer.WriteString("-") // TODO: En-passant target square
-	this.space()
+	this.space()                 // TODO: move counts
 	this.buffer.WriteString(strconv.Itoa(this.halfMoveCount))
 	this.space()
 	this.buffer.WriteString(strconv.Itoa(this.fullMoveCount))
