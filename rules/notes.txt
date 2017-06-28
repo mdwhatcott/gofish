@@ -24,6 +24,7 @@ Promotion:            https://en.wikipedia.org/wiki/Promotion_(chess)
 // TODO: detect 50-move rule violation
 // TODO: Load/Export PGN
 
+// TODO: concurrent move generation?
 
 Interesting games to test with:
 
