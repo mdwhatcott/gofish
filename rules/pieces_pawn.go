@@ -12,65 +12,146 @@ func (this piece) getPawnCoverageFrom(from square, board board) (covered []squar
 }
 
 func (this piece) calculatePawnMovesFrom(from square, board board) (moves []move) {
-	var advancement []square
-	var captures []square
-	var promotions []piece
-	if this.Player() == White {
-		captures = whitePawnCaptureOffsets
-		promotions = whitePawnPromotions
-		if from.Rank() == "2" {
-			advancement = whitePawnInitialAdvancementOffsets
-		} else {
-			advancement = whitePawnAdvancementOffsets
-		}
+	return NewPawnMoveCalculator(this, from, board).calculateLegalMoves()
+}
+
+/**************************************************************************/
+
+type PawnMoveCalculator struct {
+	piece piece
+	from  square
+	board board
+
+	advancement []square
+	captures    []square
+	promotions  []piece
+
+	moves []move
+}
+
+func NewPawnMoveCalculator(piece piece, from square, board board) *PawnMoveCalculator {
+	calculator := &PawnMoveCalculator{
+		piece: piece,
+		from:  from,
+		board: board,
+	}
+	calculator.determinePossibilities()
+	return calculator
+}
+func (this *PawnMoveCalculator) determinePossibilities() {
+	if this.piece.Player() == White {
+		this.determineWhitePawnPossibilities()
 	} else {
-		captures = blackPawnCaptureOffsets
-		promotions = blackPawnPromotions
-		if from.Rank() == "7" {
-			advancement = blackPawnInitialAdvancementOffsets
+		this.determineBlackPawnPossibilities()
+	}
+}
+func (this *PawnMoveCalculator) determineWhitePawnPossibilities() {
+	this.captures = whitePawnCaptureOffsets
+	this.promotions = whitePawnPromotions
+	if this.from.Rank() == "2" {
+		this.advancement = whitePawnInitialAdvancementOffsets
+	} else {
+		this.advancement = whitePawnAdvancementOffsets
+	}
+}
+
+func (this *PawnMoveCalculator) determineBlackPawnPossibilities() {
+	this.captures = blackPawnCaptureOffsets
+	this.promotions = blackPawnPromotions
+	if this.from.Rank() == "7" {
+		this.advancement = blackPawnInitialAdvancementOffsets
+	} else {
+		this.advancement = blackPawnAdvancementOffsets
+	}
+}
+
+func (this *PawnMoveCalculator) calculateLegalMoves() []move {
+	this.calculateAdvancements()
+	this.calculateCaptures()
+	return this.moves
+}
+func (this *PawnMoveCalculator) calculateAdvancements() {
+	for _, offset := range this.advancement {
+		if target := this.from.Offset(offset); this.canAdvanceTo(target) {
+			this.calculateAdvancement(target)
+		}
+	}
+}
+
+func (this *PawnMoveCalculator) canAdvanceTo(target square) bool {
+	return this.board.GetPieceAt(target) == Void
+}
+func (this *PawnMoveCalculator) calculateAdvancement(target square) {
+	if this.canPromotOnNextMove(target) {
+		this.appendAdvancementPromotions(target)
+	} else {
+		this.appendAdvancement(target)
+	}
+}
+func (this *PawnMoveCalculator) canPromotOnNextMove(target square) bool {
+	rank := target.Rank()
+	return rank == "8" || rank == "1"
+}
+
+func (this *PawnMoveCalculator) appendAdvancementPromotions(target square) {
+	for _, promotion := range this.promotions {
+		this.moves = append(this.moves, move{
+			Piece:     this.piece,
+			From:      this.from,
+			To:        target,
+			Promotion: promotion,
+		})
+	}
+}
+
+func (this *PawnMoveCalculator) appendAdvancement(target square) {
+	this.moves = append(this.moves, move{
+		Piece: this.piece,
+		From:  this.from,
+		To:    target,
+	})
+}
+
+func (this *PawnMoveCalculator) calculateCaptures() {
+	for _, offset := range this.captures {
+		targetSquare := this.from.Offset(offset)
+		targetPiece := this.board.GetPieceAt(targetSquare)
+		this.calculateCapture(targetSquare, targetPiece)
+	}
+}
+
+func (this *PawnMoveCalculator) calculateCapture(targetSquare square, targetPiece piece) {
+	if this.canCapture(targetPiece) {
+		if this.canPromotOnNextMove(targetSquare) {
+			this.appendCapturingPromotions(targetSquare, targetPiece)
 		} else {
-			advancement = blackPawnAdvancementOffsets
+			this.appendCapture(targetSquare, targetPiece)
 		}
 	}
+}
 
-	for _, offset := range advancement {
-		target := from.Offset(offset)
-		if board.GetPieceAt(target) == Void {
-			if rank := target.Rank(); rank == "8" || rank == "1" {
-				for _, promotion := range promotions {
-					moves = append(moves, move{Piece: this, From: from, To: target, Promotion: promotion})
-				}
-			} else {
-				moves = append(moves, move{Piece: this, From: from, To: target})
-			}
-		}
-	}
+func (this *PawnMoveCalculator) canCapture(targetPiece piece) bool {
+	return targetPiece.Player() == this.piece.Player().Other()
+}
 
-	for _, offset := range captures {
-		targetSquare := from.Offset(offset)
-		targetPiece := board.GetPieceAt(targetSquare)
-		if targetPiece.Player() == this.Player().Other() {
-			if rank := targetSquare.Rank(); rank == "8" || rank == "1" {
-				for _, promotion := range promotions {
-					moves = append(moves, move{
-						Piece:      this,
-						From:       from,
-						To:         targetSquare,
-						Captured:   targetPiece,
-						CapturedOn: targetSquare,
-						Promotion:  promotion,
-					})
-				}
-			} else {
-				moves = append(moves, move{
-					Piece:      this,
-					From:       from,
-					To:         targetSquare,
-					Captured:   targetPiece,
-					CapturedOn: targetSquare,
-				})
-			}
-		}
+func (this *PawnMoveCalculator) appendCapturingPromotions(targetSquare square, targetPiece piece) {
+	for _, promotion := range this.promotions {
+		this.moves = append(this.moves, move{
+			Piece:      this.piece,
+			From:       this.from,
+			To:         targetSquare,
+			Captured:   targetPiece,
+			CapturedOn: targetSquare,
+			Promotion:  promotion,
+		})
 	}
-	return moves
+}
+func (this *PawnMoveCalculator) appendCapture(targetSquare square, targetPiece piece) {
+	this.moves = append(this.moves, move{
+		Piece:      this.piece,
+		From:       this.from,
+		To:         targetSquare,
+		Captured:   targetPiece,
+		CapturedOn: targetSquare,
+	})
 }
