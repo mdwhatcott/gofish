@@ -48,7 +48,7 @@ func (this *KnightMovesFixture) Test() {
 
 func (this *KnightMovesFixture) TestCaptureMovesAreMarkedAsSuch() {
 	this.game.MustLoadFEN(knightCapturesOpposingUnits)
-	moves := filterMovesByPiece(this.game.GetLegalMoves(White), WhiteKnight)
+	moves := filterMovesByPieceOnSquare(this.game.GetLegalMoves(White), WhiteKnight, "d4")
 	for _, move := range moves {
 		this.So(move.Captured, should.Equal, BlackPawn)
 		this.So(move.CapturedOn.String(), should.Equal, move.To.String())

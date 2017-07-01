@@ -82,13 +82,13 @@ func (this *PawnMoveCalculator) canAdvanceTo(target square) bool {
 	return this.board.GetPieceAt(target) == Void
 }
 func (this *PawnMoveCalculator) calculateAdvancement(target square) {
-	if this.canPromotOnNextMove(target) {
+	if this.canPromoteOnNextMove(target) {
 		this.appendAdvancementPromotions(target)
 	} else {
 		this.appendAdvancement(target)
 	}
 }
-func (this *PawnMoveCalculator) canPromotOnNextMove(target square) bool {
+func (this *PawnMoveCalculator) canPromoteOnNextMove(target square) bool {
 	rank := target.Rank()
 	return rank == "8" || rank == "1"
 }
@@ -121,8 +121,16 @@ func (this *PawnMoveCalculator) calculateCaptures() {
 }
 
 func (this *PawnMoveCalculator) calculateCapture(targetSquare square, targetPiece piece) {
+	if targetSquare == this.board.GetEnPassantTarget() {
+		if this.piece == WhitePawn {
+			targetPiece = BlackPawn
+		} else if this.piece == BlackPawn {
+			targetPiece = WhitePawn
+		}
+	}
+
 	if this.canCapture(targetPiece) {
-		if this.canPromotOnNextMove(targetSquare) {
+		if this.canPromoteOnNextMove(targetSquare) {
 			this.appendCapturingPromotions(targetSquare, targetPiece)
 		} else {
 			this.appendCapture(targetSquare, targetPiece)
@@ -154,4 +162,34 @@ func (this *PawnMoveCalculator) appendCapture(targetSquare square, targetPiece p
 		Captured:   targetPiece,
 		CapturedOn: targetSquare,
 	})
+}
+
+/**************************************************************************/
+
+func calculateEnPassantTarget(move move) square {
+	if isBlackPawnDoubleAdvancement(move) {
+		return IntSquare(move.To.Int() + 8)
+	} else if isWhitePawnDoubleAdvancement(move) {
+		return IntSquare(move.From.Int() + 8)
+	} else {
+		return IntSquare(-1)
+	}
+}
+func isWhitePawnDoubleAdvancement(move move) bool {
+	if move.Piece != WhitePawn {
+		return false
+	}
+	if move.From.Rank() != "2" {
+		return false
+	}
+	return move.To.Rank() == "4"
+}
+func isBlackPawnDoubleAdvancement(move move) bool {
+	if move.Piece != BlackPawn {
+		return false
+	}
+	if move.From.Rank() != "7" {
+		return false
+	}
+	return move.To.Rank() == "5"
 }

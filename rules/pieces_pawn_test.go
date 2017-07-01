@@ -20,11 +20,11 @@ func (this *PawnMovesFixture) Setup() {
 }
 
 const (
-	pawnAdvancement                  = "7k/8/8/7p/P7/8/8/K7 "
-	blockedPawn                      = "7K/8/8/p7/P7/8/8/K7 "
-	initialPawn                      = "k7/p7/8/8/8/8/P7/K7 "
-	singlePawnCapture                = "k7/8/8/4p3/3P4/8/8/K7 "
-	doublePawnCaptures               = "k7/8/8/n1n3p1/1P3N1N/8/8/K7 "
+	pawnAdvancement                  = "7k/8/8/7p/P7/8/8/K7"
+	blockedPawn                      = "7K/8/8/p7/P7/8/8/K7"
+	initialPawn                      = "k7/p7/8/8/8/8/P7/K7"
+	singlePawnCapture                = "k7/8/8/4p3/3P4/8/8/K7"
+	doublePawnCaptures               = "k7/8/8/n1n3p1/1P3N1N/8/8/K7"
 	whitePawnAdvancesToPromote       = "8/5P2/8/8/8/7k/8/1K6"
 	blackPawnAdvancesToPromote       = "8/8/K7/8/8/7k/4p3/8"
 	whitePawnCapturesAndPromotes     = "2br4/3P4/7k/K7/8/8/8/8"
@@ -32,16 +32,8 @@ const (
 	pawnAdvancesToCheckEnemyKing     = "7k/8/6P1/6P1/8/8/8/1K6"
 	pawnCapturesToCheckEnemyKing     = "7k/6p1/5P2/8/8/8/8/1K6"
 	pawnPromotesToCheckEnemyKing     = "7k/5P2/8/8/8/8/8/1K6"
+	pawnAdvancesToCheckmateEnemyKing = "6Nk/5R1P/5PP1/6P1/8/8/2B5/1K6"
 	pawnPromotesToCheckmateEnemyKing = "7k/5P1p/8/8/8/8/8/1K6"
-	// TODO: en-passant move mechanics
-	// TODO: pawnCanCheckmateEnemyKing advancement
-	// TODO: pawnCanCheckmateEnemyKing capture
-	// TODO: pawnCanCheckmateEnemyKing promotion = Q
-	// TODO: pawnCanCheckmateEnemyKing promotion = R
-	// TODO: pawnCanCheckmateEnemyKing promotion = B
-	// TODO: pawnCanCheckmateEnemyKing promotion = N
-	// TODO: pawnCanCheckmateEnemyKingWithEnPassant
-
 )
 
 func (this *PawnMovesFixture) Test() {
@@ -62,5 +54,54 @@ func (this *PawnMovesFixture) Test() {
 	this.assertLegalPieceMoves(blackPawnCapturesAndPromotes, "e2", BlackPawn, "exf1=Q", "exf1=R", "exf1=B", "exf1=N")
 	this.assertLegalPieceMoves(whitePawnCapturesAndPromotes, "d7", WhitePawn, "dxc8=Q", "dxc8=R", "dxc8=B", "dxc8=N")
 	this.assertLegalPieceMoves(pawnPromotesToCheckEnemyKing, "f7", WhitePawn, "f8=Q+", "f8=R+", "f8=B", "f8=N")
-	//this.assertLegalPieceMoves(pawnPromotesToCheckmateEnemyKing, "f7", WhitePawn, "f8=Q#", "f8=R+", "f8=B", "f8=N")
+	this.assertLegalPieceMoves(pawnAdvancesToCheckmateEnemyKing, "g6", WhitePawn, "g7#")
+	this.assertLegalPieceMoves(pawnPromotesToCheckmateEnemyKing, "f7", WhitePawn, "f8=Q#", "f8=R+", "f8=B", "f8=N")
+}
+
+func (this *PawnMovesFixture) TestEnPassantIsLegal() {
+	this.PlayAndValidate(Setup{
+		PreparatoryMovesSAN: []string{"e4", "e6", "e5", "d5"},
+		FocusOnPiece:        WhitePawn,
+		FromSquare:          "e5",
+		ExpectedMovesSAN:    []string{"exd6"},
+		ExpectedPositionFEN: "rnbqkbnr/ppp2ppp/4p3/3pP3/8/8/PPPP1PPP/RNBQKBNR w - - 0 0", // w KQkq d6 0 3", // TODO
+	})
+
+	this.PlayAndValidate(Setup{
+		PreparatoryMovesSAN: []string{"e4", "e6", "e5", "f5"},
+		FocusOnPiece:        WhitePawn,
+		FromSquare:          "e5",
+		ExpectedMovesSAN:    []string{"exf6"},
+		ExpectedPositionFEN: "rnbqkbnr/pppp2pp/4p3/4Pp2/8/8/PPPP1PPP/RNBQKBNR w - - 0 0", // b KQkq f6 0 3", // TODO
+	})
+
+	this.PlayAndValidate(Setup{
+		PreparatoryMovesSAN: []string{"e4", "c5", "c3", "c4", "d4"},
+		FocusOnPiece:        BlackPawn,
+		FromSquare:          "c4",
+		ExpectedMovesSAN:    []string{"cxd3"},
+		ExpectedPositionFEN: "rnbqkbnr/pp1ppppp/8/8/2pPP3/2P5/PP3PPP/RNBQKBNR b - - 0 0", // KQkq d3 0 3", TODO
+	})
+
+	this.PlayAndValidate(Setup{
+		PreparatoryMovesSAN: []string{"e4", "c5", "c3", "c4", "b4"},
+		FocusOnPiece:        BlackPawn,
+		FromSquare:          "c4",
+		ExpectedMovesSAN:    []string{"cxb3"},
+		ExpectedPositionFEN: "rnbqkbnr/pp1ppppp/8/8/1Pp1P3/2P5/P2P1PPP/RNBQKBNR b - - 0 0", // KQkq d3 0 3", TODO
+	})
+}
+
+func (this *PawnMovesFixture) TestEnPassantIsForfeitedIfNotPerformedImmediately() {
+	this.PlayAndValidate(Setup{
+		PreparatoryMovesSAN: []string{
+			"e4", "c5",
+			"c3", "c4",
+			"b4", "h6", // With this move by black, the privilege to capture en passant is forfeited.
+			"h3",
+		},
+		FocusOnPiece:     BlackPawn,
+		FromSquare:       "c4",
+		ExpectedMovesSAN: nil,
+	})
 }

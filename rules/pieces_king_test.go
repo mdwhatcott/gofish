@@ -105,7 +105,7 @@ func (this *KingMovesFixture) TestKingCannotEnterCheck() {
 
 func (this *KingMovesFixture) TestCaptureMovesAreMarkedAsSuch() {
 	this.game.MustLoadFEN(whiteKingSurroundedByUnprotectedEnemyUnits)
-	moves := filterMovesByPiece(this.game.GetLegalMoves(White), WhiteKing)
+	moves := filterMovesByPieceOnSquare(this.game.GetLegalMoves(White), WhiteKing, "a1")
 	for _, move := range moves {
 		this.So(move.Captured, should.Equal, BlackKnight)
 		this.So(move.CapturedOn.String(), should.Equal, move.To.String())

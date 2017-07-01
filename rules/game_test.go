@@ -25,7 +25,7 @@ func (this *GameFixture) TestStartingGameConditions() {
 	this.So(this.game.IsInCheck(White), should.BeFalse)
 	this.So(this.game.IsInCheck(Black), should.BeFalse)
 	this.So(this.game.PlayerToMove(), should.Equal, White)
-	this.So(this.game.ExportFEN(), should.StartWith, startingPositionFEN)
+	this.So(this.game.ExportFEN().String(), should.StartWith, startingPositionFEN)
 }
 
 func (this *GameFixture) TestGameConditionsAfterFirstPawnMoveByWhite() {
@@ -34,7 +34,7 @@ func (this *GameFixture) TestGameConditionsAfterFirstPawnMoveByWhite() {
 
 	this.So(this.game.IsOver(), should.BeFalse)
 	this.So(this.game.PlayerToMove(), should.Equal, Black)
-	this.So(this.game.ExportFEN(), should.StartWith, positionAfter1A3)
+	this.So(this.game.ExportFEN().String(), should.StartWith, positionAfter1A3)
 }
 func (this *GameFixture) TestGameConditionsAfterTakingBackTheFirstMove() {
 	move := move{From: Square("a2"), To: Square("a3"), Piece: WhitePawn}
@@ -42,7 +42,7 @@ func (this *GameFixture) TestGameConditionsAfterTakingBackTheFirstMove() {
 	this.game.TakeBack(move)
 	this.So(this.game.IsOver(), should.BeFalse)
 	this.So(this.game.PlayerToMove(), should.Equal, White)
-	this.So(this.game.ExportFEN(), should.StartWith, startingPositionFEN)
+	this.So(this.game.ExportFEN().String(), should.StartWith, startingPositionFEN)
 }
 
 func (this *GameFixture) TestTakeBackPromotion() {
@@ -53,11 +53,11 @@ func (this *GameFixture) TestTakeBackPromotion() {
 	this.So(this.game.IsInCheck(White), should.BeFalse)
 }
 
-func (this *GameFixture) TestLoadFEN() { // TODO: test many more pieces and scenarios
+func (this *GameFixture) TestLoadFEN() {
 	const kingsOnBackRanks = "4k3/8/8/8/8/8/8/4K3"
 	err := this.game.LoadFEN(kingsOnBackRanks)
 	this.So(err, should.BeNil)
-	this.So(this.game.ExportFEN(), should.StartWith, kingsOnBackRanks)
+	this.So(this.game.ExportFEN().String(), should.StartWith, kingsOnBackRanks)
 }
 func (this *GameFixture) TestCheckMate() {
 	this.assertInCheckMate("7k/5KQ1/8/8/8/8/8/8", Black)

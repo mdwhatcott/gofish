@@ -57,13 +57,12 @@ func (this *FEN) parseSquares(fenBoard string) {
 }
 
 func (this *FEN) parsePlayerToMove(fields []string) {
+	this.toMove = White
 	if len(fields) <= 1 {
 		return
 	}
 	player := fields[1]
-	if player == "w" {
-		this.toMove = White
-	} else {
+	if player == "b" {
 		this.toMove = Black
 	}
 }
@@ -116,8 +115,10 @@ func copyMapToArray(squares map[square]piece) []piece {
 }
 
 func (this *FEN) String() string {
-	this.recordPiecePlacement()
-	this.recordGameMetadata()
+	if this.buffer.Len() == 0 {
+		this.recordPiecePlacement()
+		this.recordGameMetadata()
+	}
 	return this.buffer.String()
 }
 

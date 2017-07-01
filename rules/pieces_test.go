@@ -83,8 +83,9 @@ func (this *LegalMovesFixture) assertAllLegalMoves(actualMoves []move, expectedM
 	this.So(actualMovesSan, should.Resemble, expectedMovesSAN)
 	if this.Failed() {
 		picture := console.NewBoard()
-		picture.Setup(this.game.ExportFEN())
+		picture.Setup(this.game.ExportFEN().String())
 		this.Println(console.NewCoordinateBoard(picture.String()))
+		this.Println("Moves:", actualMoves)
 	}
 }
 
@@ -98,32 +99,52 @@ func (this *LegalMovesFixture) assertLegalPieceMoves(
 	this.game.MustLoadFEN(position)
 
 	moves := this.game.GetLegalMoves(piece.Player())
-	actualPieceMoves := filterMovesByPiece(moves, piece)
-	this.So(actualPieceMoves, should.HaveLength, len(expectedPieceMovesSAN))
+	actualPieceMoves := filterMovesByPieceOnSquare(moves, piece, from)
 
-	actualTargets := []string{}
-	for _, move := range actualPieceMoves {
-		this.So(move.Piece, should.Equal, piece)
-		this.So(move.From.String(), should.Equal, from)
-		this.So(move.To.String(), should.NotResemble, move.From.String())
-		actualTargets = append(actualTargets, move.String())
-	}
-	sort.Strings(actualTargets)
-	sort.Strings(expectedPieceMovesSAN)
-	this.So(actualTargets, should.Resemble, expectedPieceMovesSAN)
-	if this.Failed() {
-		picture := console.NewBoard()
-		picture.Setup(position)
-		this.Println(console.NewCoordinateBoard(picture.String()))
-		this.Println("Moves:", moves)
-	}
+	this.assertAllLegalMoves(actualPieceMoves, expectedPieceMovesSAN...)
 }
 
-func filterMovesByPiece(moves []move, piece piece) (filtered []move) {
+func filterMovesByPieceOnSquare(moves []move, piece piece, from string) (filtered []move) {
 	for _, move := range moves {
-		if move.Piece == piece {
+		if move.Piece == piece && move.From.String() == from {
 			filtered = append(filtered, move)
 		}
 	}
 	return filtered
+}
+
+/**************************************************************************/
+
+type Setup struct {
+	InitialPositionFEN  string
+	PreparatoryMovesSAN []string
+	ExpectedMovesSAN    []string
+	ExpectedPositionFEN string
+	FocusOnPiece        piece
+	FromSquare          string
+}
+
+func (this *LegalMovesFixture) PlayAndValidate(setup Setup) {
+	if setup.InitialPositionFEN != "" {
+		this.game.MustLoadFEN(setup.InitialPositionFEN)
+	} else {
+		this.game.Reset()
+	}
+
+	for _, move := range setup.PreparatoryMovesSAN {
+		this.game.Attempt(move)
+	}
+
+	resultPosition := this.game.ExportFEN().String()
+
+	if setup.ExpectedPositionFEN != "" {
+		this.AssertEqual(resultPosition, setup.ExpectedPositionFEN)
+	}
+
+	if setup.FocusOnPiece != Void {
+		this.assertLegalPieceMoves(resultPosition, setup.FromSquare, setup.FocusOnPiece, setup.ExpectedMovesSAN...)
+	} else {
+		this.assertAllLegalMoves(this.game.GetLegalMoves(this.game.PlayerToMove()), setup.ExpectedMovesSAN...)
+	}
+
 }

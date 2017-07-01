@@ -5,6 +5,8 @@ import "log"
 type Game struct {
 	squares map[square]piece
 	player  player
+
+	enPassantTarget square
 }
 
 func NewGame() *Game {
@@ -19,7 +21,8 @@ func (this *Game) initialize(state map[square]piece) {
 }
 
 func (this *Game) Reset() {
-	this.LoadFEN(startingPositionFEN)
+	this.MustLoadFEN(startingPositionFEN)
+	this.player = White
 }
 
 func (this *Game) MustLoadFEN(raw string) {
@@ -32,18 +35,24 @@ func (this *Game) LoadFEN(raw string) error {
 	if err != nil {
 		return err
 	}
+	squares := map[square]piece{}
 	for s, piece := range fen.squares {
-		this.squares[IntSquare(s)] = piece
+		squares[IntSquare(s)] = piece
 	}
-	this.player = White
+	this.initialize(squares)
+	this.player = fen.toMove
 	return nil
 }
-func (this *Game) ExportFEN() string {
-	return PrepareFEN(this.squares, this).String()
+func (this *Game) ExportFEN() *FEN {
+	return PrepareFEN(this.squares, this)
 }
 
 func (this *Game) PlayerToMove() player {
 	return this.player
+}
+
+func (this *Game) GetEnPassantTarget() square {
+	return this.enPassantTarget
 }
 
 func (this *Game) IsOver() bool {
@@ -66,16 +75,28 @@ func (this *Game) findKing(player player) square {
 	return IntSquare(-1)
 }
 
+func (this *Game) Attempt(moveSAN string) bool {
+	legalMoves := this.GetLegalMoves(this.PlayerToMove())
+	for _, move := range legalMoves {
+		if move.SAN() == moveSAN {
+			this.Execute(move)
+			return true
+		}
+	}
+	return false
+}
+
 func (this *Game) Execute(move move) {
 	this.squares[move.To], this.squares[move.From] = this.squares[move.From], Void
 	if move.Promotion != Void {
 		this.squares[move.To] = move.Promotion
 	}
+	this.enPassantTarget = calculateEnPassantTarget(move)
 	this.player = this.player.Other()
 }
 
 func (this *Game) TakeBack(move move) {
-	// TODO: this code will not yet undo en-passant correctly.
+	// TODO: this code will not yet undo en-passant correctly. It needs to put back the enPassant target square and restore the taken piece at the doubly advanced position.
 	this.squares[move.From], this.squares[move.To] = this.squares[move.To], move.Captured
 	if move.Promotion != Void {
 		this.squares[move.From] = move.Piece
@@ -123,10 +144,12 @@ func (this *Game) GetLegalMoves(player player) (moves []move) {
 			for _, move := range piece.CalculateMovesFrom(square, this) {
 				imagination.Execute(move)
 				if !imagination.IsInCheck(player) {
-					if imagination.IsInCheck(player.Other()) {
+					if imagination.IsInCheckmate(player.Other()) {
+						move.Checkmate = true
+					} else if imagination.IsInCheck(player.Other()) {
 						move.Check = true
 					}
-					moves = append(moves, move) // TODO: if this move puts the other player in check, mark the move as such
+					moves = append(moves, move)
 				}
 				imagination.TakeBack(move)
 			}

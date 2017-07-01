@@ -5,5 +5,5 @@ type board interface {
 	TakeBack(move move)
 	GetPieceAt(square) piece
 	GetLegalMoves(player player) []move
-	//GetEnPassantTarget() square
+	GetEnPassantTarget() square
 }
