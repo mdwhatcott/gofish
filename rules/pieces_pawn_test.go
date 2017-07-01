@@ -3,6 +3,7 @@ package rules
 import (
 	"testing"
 
+	"github.com/smartystreets/assertions/should"
 	"github.com/smartystreets/gunit"
 )
 
@@ -56,6 +57,16 @@ func (this *PawnMovesFixture) Test() {
 	this.assertLegalPieceMoves(pawnPromotesToCheckEnemyKing, "f7", WhitePawn, "f8=Q+", "f8=R+", "f8=B", "f8=N")
 	this.assertLegalPieceMoves(pawnAdvancesToCheckmateEnemyKing, "g6", WhitePawn, "g7#")
 	this.assertLegalPieceMoves(pawnPromotesToCheckmateEnemyKing, "f7", WhitePawn, "f8=Q#", "f8=R+", "f8=B", "f8=N")
+}
+
+func (this *GameFixture) TestTakeBackPromotion() {
+	fen := "8/8/8/8/8/7k/K3p3/8"
+	this.game.MustLoadFEN(fen)
+	move := move{Piece: BlackPawn, From: Square("e2"), To: Square("e1"), Promotion: BlackQueen}
+	this.game.Execute(move)
+	this.game.TakeBack(move)
+	this.So(this.game.IsInCheck(White), should.BeFalse)
+	this.So(this.game.ExportFEN().String(), should.StartWith, fen)
 }
 
 func (this *PawnMovesFixture) TestEnPassantIsLegal() {
