@@ -21,8 +21,9 @@ func (this *Game) initialize(state map[square]piece) {
 }
 
 func (this *Game) Reset() {
-	this.MustLoadFEN(startingPositionFEN)
 	this.player = White
+	this.enPassantTarget = IntSquare(-1)
+	this.MustLoadFEN(startingPositionFEN)
 }
 
 func (this *Game) MustLoadFEN(raw string) {
@@ -75,32 +76,41 @@ func (this *Game) findKing(player player) square {
 	return IntSquare(-1)
 }
 
-func (this *Game) Attempt(moveSAN string) bool {
+func (this *Game) Attempt(moveSAN string) move {
 	legalMoves := this.GetLegalMoves(this.PlayerToMove())
 	for _, move := range legalMoves {
 		if move.SAN() == moveSAN {
 			this.Execute(move)
-			return true
+			return move
 		}
 	}
-	return false
+	return move{}
 }
 
 func (this *Game) Execute(move move) {
 	this.squares[move.To], this.squares[move.From] = this.squares[move.From], Void
+
 	if move.Promotion != Void {
 		this.squares[move.To] = move.Promotion
+	} else if move.EnPassant {
+		this.squares[Square(move.To.File()+move.From.Rank())] = Void
 	}
+
 	this.enPassantTarget = calculateEnPassantTarget(move)
 	this.player = this.player.Other()
 }
 
 func (this *Game) TakeBack(move move) {
-	// TODO: this code will not yet undo en-passant correctly. It needs to put back the enPassant target square and restore the taken piece at the doubly advanced position.
 	this.squares[move.From], this.squares[move.To] = this.squares[move.To], move.Captured
+
 	if move.Promotion != Void {
 		this.squares[move.From] = move.Piece
+	} else if move.EnPassant {
+		this.squares[move.To] = Void
+		this.squares[Square(move.To.File()+move.From.Rank())] = move.Captured
+		this.enPassantTarget = move.To
 	}
+
 	this.player = this.player.Other()
 }
 

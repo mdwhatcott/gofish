@@ -121,7 +121,8 @@ func (this *PawnMoveCalculator) calculateCaptures() {
 }
 
 func (this *PawnMoveCalculator) calculateCapture(targetSquare square, targetPiece piece) {
-	if targetSquare == this.board.GetEnPassantTarget() {
+	isEnPassant := targetSquare == this.board.GetEnPassantTarget()
+	if isEnPassant {
 		if this.piece == WhitePawn {
 			targetPiece = BlackPawn
 		} else if this.piece == BlackPawn {
@@ -133,7 +134,7 @@ func (this *PawnMoveCalculator) calculateCapture(targetSquare square, targetPiec
 		if this.canPromoteOnNextMove(targetSquare) {
 			this.appendCapturingPromotions(targetSquare, targetPiece)
 		} else {
-			this.appendCapture(targetSquare, targetPiece)
+			this.appendCapture(targetSquare, targetPiece, isEnPassant)
 		}
 	}
 }
@@ -154,13 +155,14 @@ func (this *PawnMoveCalculator) appendCapturingPromotions(targetSquare square, t
 		})
 	}
 }
-func (this *PawnMoveCalculator) appendCapture(targetSquare square, targetPiece piece) {
+func (this *PawnMoveCalculator) appendCapture(targetSquare square, targetPiece piece, isEnPassant bool) {
 	this.moves = append(this.moves, move{
 		Piece:      this.piece,
 		From:       this.from,
 		To:         targetSquare,
 		Captured:   targetPiece,
 		CapturedOn: targetSquare,
+		EnPassant:  isEnPassant,
 	})
 }
 

@@ -69,7 +69,7 @@ func (this *GameFixture) TestTakeBackPromotion() {
 	this.So(this.game.ExportFEN().String(), should.StartWith, fen)
 }
 
-func (this *PawnMovesFixture) TestEnPassantIsLegal() {
+func (this *PawnMovesFixture) TestEnPassantIsLegalMove() {
 	this.PlayAndValidate(Setup{
 		PreparatoryMovesSAN: []string{"e4", "e6", "e5", "d5"},
 		FocusOnPiece:        WhitePawn,
@@ -115,4 +115,63 @@ func (this *PawnMovesFixture) TestEnPassantIsForfeitedIfNotPerformedImmediately(
 		FromSquare:       "c4",
 		ExpectedMovesSAN: nil,
 	})
+}
+
+func (this *PawnMovesFixture) TestEnPassantMoveMechanics_CapturedPieceRemoved() {
+	this.Play(Setup{PreparatoryMovesSAN: []string{
+		"e4", "e6",
+		"e5", "d5",
+		"exd6",
+	}})
+	this.assertPosition("rnbqkbnr/ppp2ppp/3Pp3/8/8/8/PPPP1PPP/RNBQKBNR")
+
+	this.Play(Setup{PreparatoryMovesSAN: []string{
+		"e4", "e6",
+		"e5", "f5",
+		"exf6",
+	}})
+	this.assertPosition("rnbqkbnr/pppp2pp/4pP2/8/8/8/PPPP1PPP/RNBQKBNR")
+
+	this.Play(Setup{PreparatoryMovesSAN: []string{
+		"e3", "e5",
+		"Nc3", "e4",
+		"d4", "exd3",
+	}})
+	this.assertPosition("rnbqkbnr/pppp1ppp/8/8/8/2NpP3/PPP2PPP/R1BQKBNR")
+
+	this.Play(Setup{PreparatoryMovesSAN: []string{
+		"e3", "e5",
+		"Nc3", "e4",
+		"f4", "exf3",
+	}})
+	this.assertPosition("rnbqkbnr/pppp1ppp/8/8/8/2N1Pp2/PPPP2PP/R1BQKBNR")
+}
+
+func (this *PawnMovesFixture) TestWhitePawnEnPassantTakeBack() {
+	this.Play(Setup{PreparatoryMovesSAN: []string{
+		"e4", "e6",
+		"e5", "d5",
+	}})
+	beforeEnPassant := this.game.ExportFEN().String()
+	enPassant := this.game.Attempt("exd6")
+
+	this.game.TakeBack(enPassant)
+
+	this.assertPosition(beforeEnPassant)
+	this.So(this.game.GetEnPassantTarget().String(), should.Equal, "d6")
+}
+
+func (this *PawnMovesFixture) TestBlackPawnEnPassantTakeBack() {
+	this.Play(Setup{PreparatoryMovesSAN: []string{
+		"e3", "e5",
+		"Nc3", "e4",
+		"d4",
+	}})
+	beforeEnPassant := this.game.ExportFEN().String()
+	enPassant := this.game.Attempt("exd3")
+
+	this.game.TakeBack(enPassant)
+
+	this.assertPosition(beforeEnPassant)
+	this.So(this.game.GetEnPassantTarget().String(), should.Equal, "d3")
 }

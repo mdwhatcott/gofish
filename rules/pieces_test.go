@@ -113,6 +113,20 @@ func filterMovesByPieceOnSquare(moves []move, piece piece, from string) (filtere
 	return filtered
 }
 
+func (this *LegalMovesFixture) assertPosition(expected string) {
+	actual := this.game.ExportFEN().String()
+	if !this.So(actual, should.StartWith, expected) {
+		expectedBoard := console.NewBoard()
+		expectedBoard.Setup(expected)
+
+		actualBoard := console.NewBoard()
+		actualBoard.Setup(actual)
+
+		this.Println("Expected:\n", expectedBoard.String())
+		this.Println("Actual:\n", actualBoard.String())
+	}
+}
+
 /**************************************************************************/
 
 type Setup struct {
@@ -124,7 +138,7 @@ type Setup struct {
 	FromSquare          string
 }
 
-func (this *LegalMovesFixture) PlayAndValidate(setup Setup) {
+func (this *LegalMovesFixture) Play(setup Setup) {
 	if setup.InitialPositionFEN != "" {
 		this.game.MustLoadFEN(setup.InitialPositionFEN)
 	} else {
@@ -134,6 +148,9 @@ func (this *LegalMovesFixture) PlayAndValidate(setup Setup) {
 	for _, move := range setup.PreparatoryMovesSAN {
 		this.game.Attempt(move)
 	}
+}
+func (this *LegalMovesFixture) PlayAndValidate(setup Setup) {
+	this.Play(setup)
 
 	resultPosition := this.game.ExportFEN().String()
 

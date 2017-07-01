@@ -12,6 +12,7 @@ type move struct {
 	NotFrom []square
 
 	Promotion piece
+	EnPassant bool
 
 	Captured   piece
 	CapturedOn square
@@ -27,6 +28,9 @@ func (this move) String() string {
 }
 
 func (this move) SAN() string {
+	if this.Piece == Void {
+		return ""
+	}
 	buffer := new(bytes.Buffer)
 
 	if this.Castles {
