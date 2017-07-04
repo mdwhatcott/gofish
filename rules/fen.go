@@ -7,7 +7,7 @@ import (
 	"unicode"
 )
 
-const startingPositionFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+const startingPositionFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 // Forsyth–Edwards Notation
 // https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
@@ -17,10 +17,10 @@ type FEN struct {
 	squares []piece
 	toMove  player
 
-	whiteCanCastleKingside  bool
-	whiteCanCastleQueenside bool
-	blackCanCastleKingside  bool
-	blackCanCastleQueenside bool
+	whiteOO  bool
+	whiteOOO bool
+	blackOO  bool
+	blackOOO bool
 
 	enPassantTargetSquare int
 	fullMoveCount         int
@@ -74,13 +74,13 @@ func (this *FEN) parseCastlingOpportunities(fields []string) {
 	for _, c := range castle {
 		switch c {
 		case 'K':
-			this.whiteCanCastleKingside = true
+			this.whiteOO = true
 		case 'k':
-			this.blackCanCastleKingside = true
+			this.blackOO = true
 		case 'Q':
-			this.whiteCanCastleQueenside = true
+			this.whiteOOO = true
 		case 'q':
-			this.blackCanCastleQueenside = true
+			this.blackOOO = true
 		}
 	}
 
@@ -102,7 +102,13 @@ func PrepareFEN(squares map[square]piece, game *Game) *FEN {
 		buffer:                new(bytes.Buffer),
 		squares:               copyMapToArray(squares),
 		toMove:                game.PlayerToMove(),
+		whiteOO:               game.wOO,
+		blackOO:               game.bOO,
+		whiteOOO:              game.wOOO,
+		blackOOO:              game.bOOO,
 		enPassantTargetSquare: 0, // TODO
+		halfMoveCount:         0,
+		fullMoveCount:         1,
 	}
 }
 
@@ -157,16 +163,16 @@ func (this *FEN) recordActiveColor() {
 func (this *FEN) recordCastlingOpportunities() {
 	initial := this.buffer.Len()
 
-	if this.whiteCanCastleKingside {
+	if this.whiteOO {
 		this.buffer.WriteString("K")
 	}
-	if this.whiteCanCastleQueenside {
+	if this.whiteOOO {
 		this.buffer.WriteString("Q")
 	}
-	if this.blackCanCastleKingside {
+	if this.blackOO {
 		this.buffer.WriteString("k")
 	}
-	if this.blackCanCastleQueenside {
+	if this.blackOOO {
 		this.buffer.WriteString("q")
 	}
 

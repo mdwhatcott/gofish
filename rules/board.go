@@ -6,4 +6,6 @@ type board interface {
 	GetPieceAt(square) piece
 	GetLegalMoves(player player) []move
 	GetEnPassantTarget() square
+	OO(player) bool
+	OOO(player) bool
 }

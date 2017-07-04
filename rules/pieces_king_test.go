@@ -34,8 +34,6 @@ const (
 	whiteKingSurroundedByFriendlyUnits         = "k7/8/8/8/1BQR4/1NKN4/1PPP4/8 w - - 0 1"
 	whiteKingSurroundedByUnprotectedEnemyUnits = "k7/8/8/8/8/8/nn6/Kn6 w - - 0 1"
 	kingCannotApproachOtherKing                = "kq6/8/K7/8/8/8/8/8 w - - 0 1"
-	whiteWithCastlingOpportunities             = "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1" // TODO
-	blackWithCastlingOpportunities             = "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R b KQkq - 0 1" // TODO
 	whiteKingSurroundedByThreatenedSquares     = "2r1r3/8/8/r7/3K4/r7/8/8 w - - 0 1"
 	whiteKingSurroundedByProtectedEnemyUnits   = "8/8/8/2qqq3/2qKq3/2qqq3/8/8 w - - 0 1"
 )
@@ -46,57 +44,38 @@ func (this *KingMovesFixture) TestAwayFromAnyEdge() {
 		"Ka1", "Ka2", "Ka3",
 		"Kb1" /****/, "Kb3",
 		"Kc1", "Kc2", "Kc3")
-}
-func (this *KingMovesFixture) TestOnBottomEdge() {
 	this.assertLegalPieceMoves(whiteKingOnBottomEdge, "b1", WhiteKing,
 		"Ka2", "Kb2", "Kc2",
 		"Ka1" /****/, "Kc1")
-}
-func (this *KingMovesFixture) TestOnTopEdge() {
 	this.assertLegalPieceMoves(blackKingOnTopEdge, "b8", BlackKing,
 		"Ka8" /****/, "Kc8",
 		"Ka7", "Kb7", "Kc7")
-}
-func (this *KingMovesFixture) TestOnLeftEdge() {
 	this.assertLegalPieceMoves(blackKingOnLeftEdge, "a7", BlackKing,
 		"Ka8", "Kb8",
 		/****/ "Kb7",
 		"Ka6", "Kb6")
-}
-func (this *KingMovesFixture) TestOnRightEdge() {
 	this.assertLegalPieceMoves(blackKingOnRightEdge, "h7", BlackKing,
 		"Kg8", "Kh8",
 		"Kg7",
 		"Kg6", "Kh6")
-}
-func (this *KingMovesFixture) TestInBottomLeftCorner() {
 	this.assertLegalPieceMoves(whiteKingInBottomLeftCorner, "a1", WhiteKing,
 		"Ka2", "Kb2",
 		/****/ "Kb1")
-}
-func (this *KingMovesFixture) TestInBottomRightCorner() {
 	this.assertLegalPieceMoves(whiteKingInBottomRightCorner, "h1", WhiteKing,
 		"Kg2", "Kh2",
 		"Kg1" /****/)
-}
-func (this *KingMovesFixture) TestInTopLeftCorner() {
 	this.assertLegalPieceMoves(blackKingInTopLeftCorner, "a8", BlackKing,
 		/****/ "Kb8",
 		"Ka7", "Kb7")
-}
-func (this *KingMovesFixture) TestInTopRightCorner() {
 	this.assertLegalPieceMoves(blackKingInTopRightCorner, "h8", BlackKing,
 		"Kg8", /***/
 		"Kg7", "Kh7")
-}
-func (this *KingMovesFixture) TestBlockedByFriendlyUnits() {
-	this.assertLegalPieceMoves(whiteKingSurroundedByFriendlyUnits, "c3", WhiteKing)
-}
-func (this *KingMovesFixture) TestSurroundedByUnprotectedEnemyUnits() {
 	this.assertLegalPieceMoves(whiteKingSurroundedByUnprotectedEnemyUnits, "a1", WhiteKing,
 		"Kxa2", "Kxb2",
 		/*****/ "Kxb1")
+	this.assertLegalPieceMoves(whiteKingSurroundedByFriendlyUnits, "c3", WhiteKing)
 }
+
 func (this *KingMovesFixture) TestKingCannotEnterCheck() {
 	this.assertLegalPieceMoves(kingCannotApproachOtherKing, "a8", BlackKing)
 	this.assertLegalPieceMoves(whiteKingSurroundedByThreatenedSquares, "d4", WhiteKing)
@@ -111,3 +90,163 @@ func (this *KingMovesFixture) TestCaptureMovesAreMarkedAsSuch() {
 		this.So(move.CapturedOn.String(), should.Equal, move.To.String())
 	}
 }
+
+func (this *KingMovesFixture) TestCanCastle() {
+	this.assertLegalPieceMoves(whiteKingWithCastlingOpportunities, "e1", WhiteKing, "Kf1", "Kd1", "O-O", "O-O-O")
+	this.assertLegalPieceMoves(blackKingWithCastlingOpportunities, "e8", BlackKing, "Kf8", "Kd8", "O-O", "O-O-O")
+}
+func (this *KingMovesFixture) TestCannotCastleBecauseOfFENSettings() {
+	this.assertLegalPieceMoves(whiteKingWithoutCastlingRights, "e1", WhiteKing, "Kf1", "Kd1")
+	this.assertLegalPieceMoves(blackKingWithoutCastlingRights, "e8", BlackKing, "Kf8", "Kd8")
+}
+
+const (
+	whiteKingWithCastlingOpportunities                      = "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1"
+	blackKingWithCastlingOpportunities                      = "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R b KQkq - 0 1"
+	whiteKingWithoutCastlingRights                          = "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w - - 0 1"
+	blackKingWithoutCastlingRights                          = "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R b - - 0 1"
+	whiteKingCannotCastleBecauseTravelSquaresAreOccupied    = "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R2QKB1R w KQkq - 0 1"
+	blackKingCannotCastleBecauseTravelSquaresAreOccupied    = "r2qkb1r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1"
+	whiteKingCannotCastleBecauseLandingSquaresAreOccupied   = "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R1B1K1NR w KQkq - 0 1"
+	blackKingCannotCastleBecauseLandingSquaresAreOccupied   = "r1b1k1nr/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1"
+	whiteKingCannotCastleQueensideBecauseRookIsBlocked      = "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/RN2K2R w KQkq - 0 1"
+	blackKingCannotCastleQueensideBecauseRookIsBlocked      = "rn2k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1"
+	whiteKingCannotCastleWhenInCheck                        = "r3k2r/ppppqppp/8/8/8/8/PPPP1PPP/R3K2R w KQkq - 0 1"
+	blackKingCannotCastleWhenInCheck                        = "r3k2r/pppp1ppp/8/8/8/8/PPPPQPPP/R3K2R w KQkq - 0 1"
+	whiteKingCannotCastleKingsideWhenTravelingThroughCheck  = "r3k2r/pppppqpp/8/8/8/8/PPPPP1PP/R3K2R w KQkq - 0 1"
+	whiteKingCannotCastleQueensideWhenTravelingThroughCheck = "r3k2r/pppqpppp/8/8/8/8/PPP1PPPP/R3K2R w KQkq - 0 1"
+	blackKingCannotCastleKingsideWhenTravelingThroughCheck  = "r3k2r/ppppp1pp/8/8/8/8/PPPPPQPP/R3K2R w KQkq - 0 1"
+	blackKingCannotCastleQueensideWhenTravelingThroughCheck = "r3k2r/ppp1pppp/8/8/8/8/PPPQPPPP/R3K2R w KQkq - 0 1"
+	whiteKingCannotCastleKingsideWhenLandingInCheck         = "r3k2r/ppppppqp/8/8/8/8/PPPPPP1P/R3K2R w KQkq - 0 1"
+	whiteKingCannotCastleQueensideWhenLandingInCheck        = "r3k2r/ppqppppp/8/8/8/8/PP1PPPPP/R3K2R w KQkq - 0 1"
+	blackKingCannotCastleKingsideWhenLandingInCheck         = "r3k2r/pppppp1p/8/8/8/8/PPPPPPQP/R3K2R w KQkq - 0 1"
+	blackKingCannotCastleQueensideWhenLandingInCheck        = "r3k2r/pp1ppppp/8/8/8/8/PPQPPPPP/R3K2R w KQkq - 0 1"
+	whiteKingCANCastleEvenWhenRookWouldPassThroughAttack    = "r3k2r/pqpppppp/8/8/8/8/P1PPPPPP/R3K2R w KQkq - 0 1"
+	blackKingCANCastleEvenWhenRookWouldPassThroughAttack    = "r3k2r/p1pppppp/8/8/8/8/PQPPPPPP/R3K2R w KQkq - 0 1"
+)
+
+func (this *KingMovesFixture) TestCannotCastle() {
+	this.assertLegalPieceMoves(whiteKingCannotCastleBecauseTravelSquaresAreOccupied, "e1", WhiteKing)
+	this.assertLegalPieceMoves(blackKingCannotCastleBecauseTravelSquaresAreOccupied, "e8", BlackKing)
+	this.assertLegalPieceMoves(whiteKingCannotCastleBecauseLandingSquaresAreOccupied, "e1", WhiteKing, "Kd1", "Kf1")
+	this.assertLegalPieceMoves(blackKingCannotCastleBecauseLandingSquaresAreOccupied, "e8", BlackKing, "Kd8", "Kf8")
+	this.assertLegalPieceMoves(whiteKingCannotCastleQueensideBecauseRookIsBlocked, "e1", WhiteKing, "Kd1", "Kf1", "O-O")
+	this.assertLegalPieceMoves(blackKingCannotCastleQueensideBecauseRookIsBlocked, "e8", BlackKing, "Kd8", "Kf8", "O-O")
+	this.assertLegalPieceMoves(whiteKingCannotCastleWhenInCheck, "e1", WhiteKing, "Kd1", "Kf1")
+	this.assertLegalPieceMoves(blackKingCannotCastleWhenInCheck, "e8", BlackKing, "Kd8", "Kf8")
+	this.assertLegalPieceMoves(whiteKingCannotCastleKingsideWhenTravelingThroughCheck, "e1", WhiteKing, "Kd1", "O-O-O")
+	this.assertLegalPieceMoves(whiteKingCannotCastleQueensideWhenTravelingThroughCheck, "e1", WhiteKing, "Kf1", "O-O")
+	this.assertLegalPieceMoves(blackKingCannotCastleKingsideWhenTravelingThroughCheck, "e8", BlackKing, "Kd8", "O-O-O")
+	this.assertLegalPieceMoves(blackKingCannotCastleQueensideWhenTravelingThroughCheck, "e8", BlackKing, "Kf8", "O-O")
+	this.assertLegalPieceMoves(whiteKingCannotCastleKingsideWhenLandingInCheck, "e1", WhiteKing, "Kd1", "Kf1", "O-O-O")
+	this.assertLegalPieceMoves(whiteKingCannotCastleQueensideWhenLandingInCheck, "e1", WhiteKing, "Kd1", "Kf1", "O-O")
+	this.assertLegalPieceMoves(blackKingCannotCastleKingsideWhenLandingInCheck, "e8", BlackKing, "Kd8", "Kf8", "O-O-O")
+	this.assertLegalPieceMoves(blackKingCannotCastleQueensideWhenLandingInCheck, "e8", BlackKing, "Kd8", "Kf8", "O-O")
+	this.assertLegalPieceMoves(whiteKingCANCastleEvenWhenRookWouldPassThroughAttack, "e1", WhiteKing,
+		"Kf1", "Kd1", "O-O", "O-O-O")
+	this.assertLegalPieceMoves(blackKingCANCastleEvenWhenRookWouldPassThroughAttack, "e8", BlackKing,
+		"Kf8", "Kd8", "O-O", "O-O-O")
+}
+
+func (this *KingMovesFixture) TestCastlingIsLegalBeforeHavingMovedTheKing() {
+	kingsIndianReadyToCastle := []string{
+		"Nf3", "Nf6",
+		"g3", "g6",
+		"Bg2", "Bg7",
+	}
+
+	this.PlayAndValidate(Setup{
+		PreparatoryMovesSAN: kingsIndianReadyToCastle,
+		FromSquare:          "e1",
+		FocusOnPiece:        WhiteKing,
+		ExpectedMovesSAN:    []string{"Kf1", "O-O"},
+	})
+	this.PlayAndValidate(Setup{
+		PreparatoryMovesSAN: kingsIndianReadyToCastle,
+		FromSquare:          "e8",
+		FocusOnPiece:        BlackKing,
+		ExpectedMovesSAN:    []string{"Kf8", "O-O"},
+	})
+}
+
+func (this *KingMovesFixture) TestCastlingKingsideIsNoLongerLegalAfterMovingTheKing() {
+	kingsIndianReadyToCastle := []string{
+		"Nf3", "Nf6",
+		"g3", "g6",
+		"Bg2", "Bg7",
+		"Kf1", "Kf8",
+		"Ke1", "Ke8",
+	}
+
+	this.PlayAndValidate(Setup{
+		PreparatoryMovesSAN: kingsIndianReadyToCastle,
+		FromSquare:          "e1",
+		FocusOnPiece:        WhiteKing,
+		ExpectedMovesSAN:    []string{"Kf1"},
+		ExpectedPositionFEN: "rnbqk2r/ppppppbp/5np1/8/8/5NP1/PPPPPPBP/RNBQK2R w - - 0 1",
+	})
+	this.PlayAndValidate(Setup{
+		PreparatoryMovesSAN: kingsIndianReadyToCastle,
+		FromSquare:          "e8",
+		FocusOnPiece:        BlackKing,
+		ExpectedMovesSAN:    []string{"Kf8"},
+		ExpectedPositionFEN: "rnbqk2r/ppppppbp/5np1/8/8/5NP1/PPPPPPBP/RNBQK2R w - - 0 1",
+	})
+}
+
+func (this *KingMovesFixture) TestCastlingQueensideIsNoLongerLegalAfterMovingTheKing() {
+	vacatedQueenside := []string{
+		"Nc3", "Nc6",
+		"e4", "e5",
+		"d4", "d5",
+		"Qf3", "Qf6",
+		"Bf4", "Bf5",
+	}
+
+	this.PlayAndValidate(Setup{
+		PreparatoryMovesSAN: vacatedQueenside,
+		FromSquare:          "e1",
+		FocusOnPiece:        WhiteKing,
+		ExpectedMovesSAN:    []string{"Kd1", "Kd2", "Ke2", "O-O-O"},
+		ExpectedPositionFEN: "r3kbnr/ppp2ppp/2n2q2/3ppb2/3PPB2/2N2Q2/PPP2PPP/R3KBNR w KQkq - 0 1",
+	})
+	this.PlayAndValidate(Setup{
+		PreparatoryMovesSAN: vacatedQueenside,
+		FromSquare:          "e8",
+		FocusOnPiece:        BlackKing,
+		ExpectedMovesSAN:    []string{"Kd8", "Kd7", "Ke7", "O-O-O"},
+		ExpectedPositionFEN: "r3kbnr/ppp2ppp/2n2q2/3ppb2/3PPB2/2N2Q2/PPP2PPP/R3KBNR w KQkq - 0 1",
+	})
+}
+
+func (this *KingMovesFixture) TestCastlingQueensideIsLegalBeforeMovingTheKing() {
+	vacatedQueenside := []string{
+		"Nc3", "Nc6",
+		"e4", "e5",
+		"d4", "d5",
+		"Qf3", "Qf6",
+		"Bf4", "Bf5",
+		"Kd1", "Kd8",
+		"Ke1", "Ke8",
+	}
+
+	this.PlayAndValidate(Setup{
+		PreparatoryMovesSAN: vacatedQueenside,
+		FromSquare:          "e1",
+		FocusOnPiece:        WhiteKing,
+		ExpectedMovesSAN:    []string{"Kd1", "Kd2", "Ke2"},
+		ExpectedPositionFEN: "r3kbnr/ppp2ppp/2n2q2/3ppb2/3PPB2/2N2Q2/PPP2PPP/R3KBNR w - - 0 1",
+	})
+	this.PlayAndValidate(Setup{
+		PreparatoryMovesSAN: vacatedQueenside,
+		FromSquare:          "e8",
+		FocusOnPiece:        BlackKing,
+		ExpectedMovesSAN:    []string{"Kd8", "Kd7", "Ke7"},
+		ExpectedPositionFEN: "r3kbnr/ppp2ppp/2n2q2/3ppb2/3PPB2/2N2Q2/PPP2PPP/R3KBNR w - - 0 1",
+	})
+}
+
+// TODO: Castling is NOT legal if involved rook has already moved
+// TODO: Executing a castling move should abolish future right to castle
+// TODO: Executing a castling move should move the king and the involved rook
+// TODO: Taking back a castling move should restore the king and the involved rook

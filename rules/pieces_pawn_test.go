@@ -75,7 +75,7 @@ func (this *PawnMovesFixture) TestEnPassantIsLegalMove() {
 		FocusOnPiece:        WhitePawn,
 		FromSquare:          "e5",
 		ExpectedMovesSAN:    []string{"exd6"},
-		ExpectedPositionFEN: "rnbqkbnr/ppp2ppp/4p3/3pP3/8/8/PPPP1PPP/RNBQKBNR w - - 0 0", // w KQkq d6 0 3", // TODO
+		ExpectedPositionFEN: "rnbqkbnr/ppp2ppp/4p3/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1", // w KQkq d6 0 3", // TODO
 	})
 
 	this.PlayAndValidate(Setup{
@@ -83,7 +83,7 @@ func (this *PawnMovesFixture) TestEnPassantIsLegalMove() {
 		FocusOnPiece:        WhitePawn,
 		FromSquare:          "e5",
 		ExpectedMovesSAN:    []string{"exf6"},
-		ExpectedPositionFEN: "rnbqkbnr/pppp2pp/4p3/4Pp2/8/8/PPPP1PPP/RNBQKBNR w - - 0 0", // b KQkq f6 0 3", // TODO
+		ExpectedPositionFEN: "rnbqkbnr/pppp2pp/4p3/4Pp2/8/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1", // b KQkq f6 0 3", // TODO
 	})
 
 	this.PlayAndValidate(Setup{
@@ -91,7 +91,7 @@ func (this *PawnMovesFixture) TestEnPassantIsLegalMove() {
 		FocusOnPiece:        BlackPawn,
 		FromSquare:          "c4",
 		ExpectedMovesSAN:    []string{"cxd3"},
-		ExpectedPositionFEN: "rnbqkbnr/pp1ppppp/8/8/2pPP3/2P5/PP3PPP/RNBQKBNR b - - 0 0", // KQkq d3 0 3", TODO
+		ExpectedPositionFEN: "rnbqkbnr/pp1ppppp/8/8/2pPP3/2P5/PP3PPP/RNBQKBNR b KQkq - 0 1", // KQkq d3 0 3", TODO
 	})
 
 	this.PlayAndValidate(Setup{
@@ -99,7 +99,7 @@ func (this *PawnMovesFixture) TestEnPassantIsLegalMove() {
 		FocusOnPiece:        BlackPawn,
 		FromSquare:          "c4",
 		ExpectedMovesSAN:    []string{"cxb3"},
-		ExpectedPositionFEN: "rnbqkbnr/pp1ppppp/8/8/1Pp1P3/2P5/P2P1PPP/RNBQKBNR b - - 0 0", // KQkq d3 0 3", TODO
+		ExpectedPositionFEN: "rnbqkbnr/pp1ppppp/8/8/1Pp1P3/2P5/P2P1PPP/RNBQKBNR b KQkq - 0 1", // KQkq d3 0 3", TODO
 	})
 }
 

@@ -72,16 +72,16 @@ func NewLegalGameMovesFixture(fixture *gunit.Fixture) *LegalMovesFixture {
 }
 
 func (this *LegalMovesFixture) assertAllLegalMoves(actualMoves []move, expectedMovesSAN ...string) {
-	this.So(actualMoves, should.HaveLength, len(expectedMovesSAN))
+	ok := this.So(actualMoves, should.HaveLength, len(expectedMovesSAN))
 	actualMovesSan := []string{}
 	for _, move := range actualMoves {
-		this.So(move.To.String(), should.NotResemble, move.From.String())
+		ok = ok && this.So(move.To.String(), should.NotResemble, move.From.String())
 		actualMovesSan = append(actualMovesSan, move.String())
 	}
 	sort.Strings(actualMovesSan)
 	sort.Strings(expectedMovesSAN)
-	this.So(actualMovesSan, should.Resemble, expectedMovesSAN)
-	if this.Failed() {
+	ok = ok && this.So(actualMovesSan, should.Resemble, expectedMovesSAN)
+	if !ok {
 		picture := console.NewBoard()
 		picture.Setup(this.game.ExportFEN().String())
 		this.Println(console.NewCoordinateBoard(picture.String()))

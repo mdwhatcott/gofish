@@ -29,5 +29,21 @@ func (this piece) calculateKingMovesFrom(from square, board board) (moves []move
 			CapturedOn: target,
 		})
 	}
+	if board.OO(this.Player()) {
+		moves = append(moves, move{
+			Piece:   this,
+			From:    from,
+			To:      IntSquare(from.Int() + 2),
+			Castles: true,
+		})
+	}
+	if board.OOO(this.Player()) {
+		moves = append(moves, move{
+			Piece:   this,
+			From:    from,
+			To:      IntSquare(from.Int() - 2),
+			Castles: true,
+		})
+	}
 	return moves
 }
