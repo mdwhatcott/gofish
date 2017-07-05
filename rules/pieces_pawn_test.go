@@ -70,7 +70,7 @@ func (this *GameFixture) TestTakeBackPromotion() {
 }
 
 func (this *PawnMovesFixture) TestEnPassantIsLegalMove() {
-	this.PlayAndValidate(Setup{
+	this.PlayAndValidate(LegalMovesSetup{
 		PreparatoryMovesSAN: []string{"e4", "e6", "e5", "d5"},
 		FocusOnPiece:        WhitePawn,
 		FromSquare:          "e5",
@@ -78,7 +78,7 @@ func (this *PawnMovesFixture) TestEnPassantIsLegalMove() {
 		ExpectedPositionFEN: "rnbqkbnr/ppp2ppp/4p3/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1", // w KQkq d6 0 3", // TODO
 	})
 
-	this.PlayAndValidate(Setup{
+	this.PlayAndValidate(LegalMovesSetup{
 		PreparatoryMovesSAN: []string{"e4", "e6", "e5", "f5"},
 		FocusOnPiece:        WhitePawn,
 		FromSquare:          "e5",
@@ -86,7 +86,7 @@ func (this *PawnMovesFixture) TestEnPassantIsLegalMove() {
 		ExpectedPositionFEN: "rnbqkbnr/pppp2pp/4p3/4Pp2/8/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1", // b KQkq f6 0 3", // TODO
 	})
 
-	this.PlayAndValidate(Setup{
+	this.PlayAndValidate(LegalMovesSetup{
 		PreparatoryMovesSAN: []string{"e4", "c5", "c3", "c4", "d4"},
 		FocusOnPiece:        BlackPawn,
 		FromSquare:          "c4",
@@ -94,7 +94,7 @@ func (this *PawnMovesFixture) TestEnPassantIsLegalMove() {
 		ExpectedPositionFEN: "rnbqkbnr/pp1ppppp/8/8/2pPP3/2P5/PP3PPP/RNBQKBNR b KQkq - 0 1", // KQkq d3 0 3", TODO
 	})
 
-	this.PlayAndValidate(Setup{
+	this.PlayAndValidate(LegalMovesSetup{
 		PreparatoryMovesSAN: []string{"e4", "c5", "c3", "c4", "b4"},
 		FocusOnPiece:        BlackPawn,
 		FromSquare:          "c4",
@@ -104,7 +104,7 @@ func (this *PawnMovesFixture) TestEnPassantIsLegalMove() {
 }
 
 func (this *PawnMovesFixture) TestEnPassantIsForfeitedIfNotPerformedImmediately() {
-	this.PlayAndValidate(Setup{
+	this.PlayAndValidate(LegalMovesSetup{
 		PreparatoryMovesSAN: []string{
 			"e4", "c5",
 			"c3", "c4",
@@ -118,28 +118,28 @@ func (this *PawnMovesFixture) TestEnPassantIsForfeitedIfNotPerformedImmediately(
 }
 
 func (this *PawnMovesFixture) TestEnPassantMoveMechanics_CapturedPieceRemoved() {
-	this.Play(Setup{PreparatoryMovesSAN: []string{
+	this.Play(LegalMovesSetup{PreparatoryMovesSAN: []string{
 		"e4", "e6",
 		"e5", "d5",
 		"exd6",
 	}})
 	this.assertPosition("rnbqkbnr/ppp2ppp/3Pp3/8/8/8/PPPP1PPP/RNBQKBNR")
 
-	this.Play(Setup{PreparatoryMovesSAN: []string{
+	this.Play(LegalMovesSetup{PreparatoryMovesSAN: []string{
 		"e4", "e6",
 		"e5", "f5",
 		"exf6",
 	}})
 	this.assertPosition("rnbqkbnr/pppp2pp/4pP2/8/8/8/PPPP1PPP/RNBQKBNR")
 
-	this.Play(Setup{PreparatoryMovesSAN: []string{
+	this.Play(LegalMovesSetup{PreparatoryMovesSAN: []string{
 		"e3", "e5",
 		"Nc3", "e4",
 		"d4", "exd3",
 	}})
 	this.assertPosition("rnbqkbnr/pppp1ppp/8/8/8/2NpP3/PPP2PPP/R1BQKBNR")
 
-	this.Play(Setup{PreparatoryMovesSAN: []string{
+	this.Play(LegalMovesSetup{PreparatoryMovesSAN: []string{
 		"e3", "e5",
 		"Nc3", "e4",
 		"f4", "exf3",
@@ -148,7 +148,7 @@ func (this *PawnMovesFixture) TestEnPassantMoveMechanics_CapturedPieceRemoved() 
 }
 
 func (this *PawnMovesFixture) TestWhitePawnEnPassantTakeBack() {
-	this.Play(Setup{PreparatoryMovesSAN: []string{
+	this.Play(LegalMovesSetup{PreparatoryMovesSAN: []string{
 		"e4", "e6",
 		"e5", "d5",
 	}})
@@ -162,7 +162,7 @@ func (this *PawnMovesFixture) TestWhitePawnEnPassantTakeBack() {
 }
 
 func (this *PawnMovesFixture) TestBlackPawnEnPassantTakeBack() {
-	this.Play(Setup{PreparatoryMovesSAN: []string{
+	this.Play(LegalMovesSetup{PreparatoryMovesSAN: []string{
 		"e3", "e5",
 		"Nc3", "e4",
 		"d4",

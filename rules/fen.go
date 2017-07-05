@@ -107,8 +107,8 @@ func PrepareFEN(squares map[square]piece, game *Game) *FEN {
 		whiteOOO:              game.wOOO,
 		blackOOO:              game.bOOO,
 		enPassantTargetSquare: 0, // TODO
-		halfMoveCount:         0,
-		fullMoveCount:         1,
+		halfMoveCount:         0, // TODO
+		fullMoveCount:         1, // TODO
 	}
 }
 
@@ -187,10 +187,10 @@ func (this *FEN) recordGameMetadata() {
 	this.recordCastlingOpportunities()
 	this.space()
 	this.buffer.WriteString("-") // TODO: En-passant target square
-	this.space()                 // TODO: move counts
-	this.buffer.WriteString(strconv.Itoa(this.halfMoveCount))
 	this.space()
-	this.buffer.WriteString(strconv.Itoa(this.fullMoveCount))
+	this.buffer.WriteString("0") // TODO: Half-move count
+	this.space()
+	this.buffer.WriteString("1") // TODO: Full-move count
 }
 func (this *FEN) space() {
 	this.buffer.WriteString(" ")

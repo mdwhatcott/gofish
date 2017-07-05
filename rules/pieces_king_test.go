@@ -91,15 +91,6 @@ func (this *KingMovesFixture) TestCaptureMovesAreMarkedAsSuch() {
 	}
 }
 
-func (this *KingMovesFixture) TestCanCastle() {
-	this.assertLegalPieceMoves(whiteKingWithCastlingOpportunities, "e1", WhiteKing, "Kf1", "Kd1", "O-O", "O-O-O")
-	this.assertLegalPieceMoves(blackKingWithCastlingOpportunities, "e8", BlackKing, "Kf8", "Kd8", "O-O", "O-O-O")
-}
-func (this *KingMovesFixture) TestCannotCastleBecauseOfFENSettings() {
-	this.assertLegalPieceMoves(whiteKingWithoutCastlingRights, "e1", WhiteKing, "Kf1", "Kd1")
-	this.assertLegalPieceMoves(blackKingWithoutCastlingRights, "e8", BlackKing, "Kf8", "Kd8")
-}
-
 const (
 	whiteKingWithCastlingOpportunities                      = "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1"
 	blackKingWithCastlingOpportunities                      = "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R b KQkq - 0 1"
@@ -124,6 +115,16 @@ const (
 	whiteKingCANCastleEvenWhenRookWouldPassThroughAttack    = "r3k2r/pqpppppp/8/8/8/8/P1PPPPPP/R3K2R w KQkq - 0 1"
 	blackKingCANCastleEvenWhenRookWouldPassThroughAttack    = "r3k2r/p1pppppp/8/8/8/8/PQPPPPPP/R3K2R w KQkq - 0 1"
 )
+
+func (this *KingMovesFixture) TestCanCastle() {
+	this.assertLegalPieceMoves(whiteKingWithCastlingOpportunities, "e1", WhiteKing, "Kf1", "Kd1", "O-O", "O-O-O")
+	this.assertLegalPieceMoves(blackKingWithCastlingOpportunities, "e8", BlackKing, "Kf8", "Kd8", "O-O", "O-O-O")
+}
+
+func (this *KingMovesFixture) TestCannotCastleBecauseOfFENSettings() {
+	this.assertLegalPieceMoves(whiteKingWithoutCastlingRights, "e1", WhiteKing, "Kf1", "Kd1")
+	this.assertLegalPieceMoves(blackKingWithoutCastlingRights, "e8", BlackKing, "Kf8", "Kd8")
+}
 
 func (this *KingMovesFixture) TestCannotCastle() {
 	this.assertLegalPieceMoves(whiteKingCannotCastleBecauseTravelSquaresAreOccupied, "e1", WhiteKing)
@@ -155,13 +156,13 @@ func (this *KingMovesFixture) TestCastlingIsLegalBeforeHavingMovedTheKing() {
 		"Bg2", "Bg7",
 	}
 
-	this.PlayAndValidate(Setup{
+	this.PlayAndValidate(LegalMovesSetup{
 		PreparatoryMovesSAN: kingsIndianReadyToCastle,
 		FromSquare:          "e1",
 		FocusOnPiece:        WhiteKing,
 		ExpectedMovesSAN:    []string{"Kf1", "O-O"},
 	})
-	this.PlayAndValidate(Setup{
+	this.PlayAndValidate(LegalMovesSetup{
 		PreparatoryMovesSAN: kingsIndianReadyToCastle,
 		FromSquare:          "e8",
 		FocusOnPiece:        BlackKing,
@@ -178,19 +179,69 @@ func (this *KingMovesFixture) TestCastlingKingsideIsNoLongerLegalAfterMovingTheK
 		"Ke1", "Ke8",
 	}
 
-	this.PlayAndValidate(Setup{
+	this.PlayAndValidate(LegalMovesSetup{
 		PreparatoryMovesSAN: kingsIndianReadyToCastle,
 		FromSquare:          "e1",
 		FocusOnPiece:        WhiteKing,
 		ExpectedMovesSAN:    []string{"Kf1"},
 		ExpectedPositionFEN: "rnbqk2r/ppppppbp/5np1/8/8/5NP1/PPPPPPBP/RNBQK2R w - - 0 1",
 	})
-	this.PlayAndValidate(Setup{
+	this.PlayAndValidate(LegalMovesSetup{
 		PreparatoryMovesSAN: kingsIndianReadyToCastle,
 		FromSquare:          "e8",
 		FocusOnPiece:        BlackKing,
 		ExpectedMovesSAN:    []string{"Kf8"},
 		ExpectedPositionFEN: "rnbqk2r/ppppppbp/5np1/8/8/5NP1/PPPPPPBP/RNBQK2R w - - 0 1",
+	})
+}
+
+func (this *KingMovesFixture) TestCastlingKingsideIsNoLongerLegalAfterMovingTheKingsideRook() {
+	kingsIndianReadyToCastle := []string{
+		"Nf3", "Nf6",
+		"g3", "g6",
+		"Bg2", "Bg7",
+		"Rg1", "Rg8",
+		"Rh1", "Rh8",
+	}
+
+	this.PlayAndValidate(LegalMovesSetup{
+		PreparatoryMovesSAN: kingsIndianReadyToCastle,
+		FromSquare:          "e1",
+		FocusOnPiece:        WhiteKing,
+		ExpectedMovesSAN:    []string{"Kf1"},
+		ExpectedPositionFEN: "rnbqk2r/ppppppbp/5np1/8/8/5NP1/PPPPPPBP/RNBQK2R w Qq - 0 1",
+	})
+	this.PlayAndValidate(LegalMovesSetup{
+		PreparatoryMovesSAN: kingsIndianReadyToCastle,
+		FromSquare:          "e8",
+		FocusOnPiece:        BlackKing,
+		ExpectedMovesSAN:    []string{"Kf8"},
+		ExpectedPositionFEN: "rnbqk2r/ppppppbp/5np1/8/8/5NP1/PPPPPPBP/RNBQK2R w Qq - 0 1",
+	})
+}
+
+func (this *KingMovesFixture) TestCastlingQueensideLegalBeforeMovingTheKing() {
+	vacatedQueenside := []string{
+		"Nc3", "Nc6",
+		"e4", "e5",
+		"d4", "d5",
+		"Qf3", "Qf6",
+		"Bf4", "Bf5",
+	}
+
+	this.PlayAndValidate(LegalMovesSetup{
+		PreparatoryMovesSAN: vacatedQueenside,
+		FromSquare:          "e1",
+		FocusOnPiece:        WhiteKing,
+		ExpectedMovesSAN:    []string{"Kd1", "Kd2", "Ke2", "O-O-O"},
+		ExpectedPositionFEN: "r3kbnr/ppp2ppp/2n2q2/3ppb2/3PPB2/2N2Q2/PPP2PPP/R3KBNR w KQkq - 0 1",
+	})
+	this.PlayAndValidate(LegalMovesSetup{
+		PreparatoryMovesSAN: vacatedQueenside,
+		FromSquare:          "e8",
+		FocusOnPiece:        BlackKing,
+		ExpectedMovesSAN:    []string{"Kd8", "Kd7", "Ke7", "O-O-O"},
+		ExpectedPositionFEN: "r3kbnr/ppp2ppp/2n2q2/3ppb2/3PPB2/2N2Q2/PPP2PPP/R3KBNR w KQkq - 0 1",
 	})
 }
 
@@ -201,43 +252,18 @@ func (this *KingMovesFixture) TestCastlingQueensideIsNoLongerLegalAfterMovingThe
 		"d4", "d5",
 		"Qf3", "Qf6",
 		"Bf4", "Bf5",
-	}
-
-	this.PlayAndValidate(Setup{
-		PreparatoryMovesSAN: vacatedQueenside,
-		FromSquare:          "e1",
-		FocusOnPiece:        WhiteKing,
-		ExpectedMovesSAN:    []string{"Kd1", "Kd2", "Ke2", "O-O-O"},
-		ExpectedPositionFEN: "r3kbnr/ppp2ppp/2n2q2/3ppb2/3PPB2/2N2Q2/PPP2PPP/R3KBNR w KQkq - 0 1",
-	})
-	this.PlayAndValidate(Setup{
-		PreparatoryMovesSAN: vacatedQueenside,
-		FromSquare:          "e8",
-		FocusOnPiece:        BlackKing,
-		ExpectedMovesSAN:    []string{"Kd8", "Kd7", "Ke7", "O-O-O"},
-		ExpectedPositionFEN: "r3kbnr/ppp2ppp/2n2q2/3ppb2/3PPB2/2N2Q2/PPP2PPP/R3KBNR w KQkq - 0 1",
-	})
-}
-
-func (this *KingMovesFixture) TestCastlingQueensideIsLegalBeforeMovingTheKing() {
-	vacatedQueenside := []string{
-		"Nc3", "Nc6",
-		"e4", "e5",
-		"d4", "d5",
-		"Qf3", "Qf6",
-		"Bf4", "Bf5",
 		"Kd1", "Kd8",
 		"Ke1", "Ke8",
 	}
 
-	this.PlayAndValidate(Setup{
+	this.PlayAndValidate(LegalMovesSetup{
 		PreparatoryMovesSAN: vacatedQueenside,
 		FromSquare:          "e1",
 		FocusOnPiece:        WhiteKing,
 		ExpectedMovesSAN:    []string{"Kd1", "Kd2", "Ke2"},
 		ExpectedPositionFEN: "r3kbnr/ppp2ppp/2n2q2/3ppb2/3PPB2/2N2Q2/PPP2PPP/R3KBNR w - - 0 1",
 	})
-	this.PlayAndValidate(Setup{
+	this.PlayAndValidate(LegalMovesSetup{
 		PreparatoryMovesSAN: vacatedQueenside,
 		FromSquare:          "e8",
 		FocusOnPiece:        BlackKing,
@@ -246,7 +272,63 @@ func (this *KingMovesFixture) TestCastlingQueensideIsLegalBeforeMovingTheKing() 
 	})
 }
 
-// TODO: Castling is NOT legal if involved rook has already moved
-// TODO: Executing a castling move should abolish future right to castle
-// TODO: Executing a castling move should move the king and the involved rook
+func (this *KingMovesFixture) TestCastlingQueensideIsNoLongerLegalAfterMovingTheQueensideRook() {
+	vacatedQueenside := []string{
+		"Nc3", "Nc6",
+		"e4", "e5",
+		"d4", "d5",
+		"Qf3", "Qf6",
+		"Bf4", "Bf5",
+		"Rb1", "Rb8",
+		"Ra1", "Ra8",
+	}
+
+	this.PlayAndValidate(LegalMovesSetup{
+		PreparatoryMovesSAN: vacatedQueenside,
+		FromSquare:          "e1",
+		FocusOnPiece:        WhiteKing,
+		ExpectedMovesSAN:    []string{"Kd1", "Kd2", "Ke2"},
+		ExpectedPositionFEN: "r3kbnr/ppp2ppp/2n2q2/3ppb2/3PPB2/2N2Q2/PPP2PPP/R3KBNR w Kk - 0 1",
+	})
+	this.PlayAndValidate(LegalMovesSetup{
+		PreparatoryMovesSAN: vacatedQueenside,
+		FromSquare:          "e8",
+		FocusOnPiece:        BlackKing,
+		ExpectedMovesSAN:    []string{"Kd8", "Kd7", "Ke7"},
+		ExpectedPositionFEN: "r3kbnr/ppp2ppp/2n2q2/3ppb2/3PPB2/2N2Q2/PPP2PPP/R3KBNR w Kk - 0 1",
+	})
+}
+
+func (this *KingMovesFixture) TestCastlingCanOnlyHappenOnce() {
+	kingsIndianAfterWhiteCastlesKingside := []string{
+		"Nf3", "Nf6",
+		"g3", "g6",
+		"Bg2", "Bg7",
+		"O-O",
+	}
+
+	this.PlayAndValidate(LegalMovesSetup{
+		PreparatoryMovesSAN: kingsIndianAfterWhiteCastlesKingside,
+		ExpectedPositionFEN: "rnbqk2r/ppppppbp/5np1/8/8/5NP1/PPPPPPBP/RNBQ1RK1 b kq - 0 1", // Only black can still castle
+
+		FocusOnPiece: WhiteBishop, // focus on a piece with not moves
+		FromSquare:   "c1",
+	})
+	kingsIndianAfterWhiteAndBlackCastleKingside := []string{
+		"Nf3", "Nf6",
+		"g3", "g6",
+		"Bg2", "Bg7",
+		"O-O", "O-O",
+	}
+	this.PlayAndValidate(LegalMovesSetup{
+		PreparatoryMovesSAN: kingsIndianAfterWhiteAndBlackCastleKingside,
+		ExpectedPositionFEN: "rnbq1rk1/ppppppbp/5np1/8/8/5NP1/PPPPPPBP/RNBQ1RK1 w - - 0 1", // No one can castle anymore
+
+		FocusOnPiece: BlackBishop, // focus on a piece with not moves
+		FromSquare:   "c8",
+	})
+}
+
+// TODO: Executing a castle queenside should abolish future right to castle
+// TODO: Executing a castling move should move the king and the involved rook ([√] kingside and [ ] queenside)
 // TODO: Taking back a castling move should restore the king and the involved rook

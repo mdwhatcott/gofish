@@ -183,25 +183,43 @@ func (this *Game) Attempt(moveSAN string) move {
 func (this *Game) Execute(move move) {
 	this.squares[move.To], this.squares[move.From] = this.squares[move.From], Void
 
+	if move.Castles && move.Piece.Player() == White && move.To.File() == "g" {
+		this.squares[Square("f1")] = WhiteRook
+		this.squares[Square("h1")] = Void
+	} else if move.Castles && move.Piece.Player() == Black && move.To.File() == "g" {
+		this.squares[Square("f8")] = BlackRook
+		this.squares[Square("h8")] = Void
+	}
+	// TODO: move associated rook
+
 	if move.Promotion != Void {
 		this.squares[move.To] = move.Promotion
 	} else if move.EnPassant {
 		this.squares[Square(move.To.File()+move.From.Rank())] = Void
 	}
-	if move.Piece == WhiteKing {
+
+	// Book-keeping for pawn moves:
+	this.enPassantTarget = calculateEnPassantTarget(move)
+
+	// Book-keeping for castling privileges:
+	switch {
+	case move.Piece == WhiteRook && this.wOOO && move.From == Square("a1"):
+		this.wOOO = false
+	case move.Piece == WhiteRook && this.wOO && move.From == Square("h1"):
+		this.wOO = false
+	case move.Piece == BlackRook && this.bOOO && move.From == Square("a8"):
+		this.bOOO = false
+	case move.Piece == BlackRook && this.bOO && move.From == Square("h8"):
+		this.bOO = false
+	case move.Piece == WhiteKing && (this.wOO || this.wOOO):
 		this.wOO = false
 		this.wOOO = false
-	}
-	if move.Piece == BlackKing {
+	case move.Piece == BlackKing && (this.bOO || this.bOOO):
 		this.bOO = false
 		this.bOOO = false
 	}
-	if move.Piece.IsKing() && move.Castles {
-		// TODO: move rook
-		// TODO: set flags to false
-	}
 
-	this.enPassantTarget = calculateEnPassantTarget(move)
+	// Book-keeping for player turns:
 	this.player = this.player.Other()
 }
 

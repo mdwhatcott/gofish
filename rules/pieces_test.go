@@ -129,7 +129,7 @@ func (this *LegalMovesFixture) assertPosition(expected string) {
 
 /**************************************************************************/
 
-type Setup struct {
+type LegalMovesSetup struct {
 	InitialPositionFEN  string
 	PreparatoryMovesSAN []string
 	ExpectedMovesSAN    []string
@@ -138,7 +138,7 @@ type Setup struct {
 	FromSquare          string
 }
 
-func (this *LegalMovesFixture) Play(setup Setup) {
+func (this *LegalMovesFixture) Play(setup LegalMovesSetup) {
 	if setup.InitialPositionFEN != "" {
 		this.game.MustLoadFEN(setup.InitialPositionFEN)
 	} else {
@@ -149,13 +149,13 @@ func (this *LegalMovesFixture) Play(setup Setup) {
 		this.game.Attempt(move)
 	}
 }
-func (this *LegalMovesFixture) PlayAndValidate(setup Setup) {
+func (this *LegalMovesFixture) PlayAndValidate(setup LegalMovesSetup) {
 	this.Play(setup)
 
 	resultPosition := this.game.ExportFEN().String()
 
 	if setup.ExpectedPositionFEN != "" {
-		this.AssertEqual(resultPosition, setup.ExpectedPositionFEN)
+		this.assertPosition(setup.ExpectedPositionFEN)
 	}
 
 	if setup.FocusOnPiece != Void {
